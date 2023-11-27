@@ -1,0 +1,48 @@
+version: '3.7'
+
+services:
+  wasm-generator:
+#    user: "1000:1000"
+    image: wasm-generator
+    build: ./wasm-generator
+    environment:
+      host_project: "/project"
+      server_code_distributor: "./code-distributor"
+      client_code_distributor: "/project/src/frontend/static/js/CodeDistributor"
+      compilation_enable_release_mode: "true"
+      compilation_enable_wasm_optimization: "true"
+#      skip_wasm_generator: "true"
+      compilation_max_thread_pool: 6
+    volumes:
+      - ./runtime-code-mobility-demo:/project
+    profiles:
+      - all
+      - generate-wasm
+
+  code-distributor:
+    image: rust:1.74
+    volumes:
+      - ./code-distributor:/project
+    working_dir: /project
+    environment:
+      app_port: 51335
+    ports:
+      - "51335:51335"
+    command: cargo run --release
+    profiles:
+      - all
+      - run-app
+
+  demo-app:
+    image: rust:1.74
+    volumes:
+      - ./runtime-code-mobility-demo:/project
+    working_dir: /project
+    environment:
+      app_port: 8081
+    ports:
+      - "8081:8081"
+    command: cargo run --release
+    profiles:
+      - all
+      - run-app

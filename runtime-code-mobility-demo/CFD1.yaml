@@ -1,0 +1,7 @@
+fragments:
+  - name: add
+    initial_execution_location: client
+    location: { filepath: src/shared/playground4.rs }
+  - name: multiply
+    initial_execution_location: client
+    location: { filepath: src/shared/playground4.rs }

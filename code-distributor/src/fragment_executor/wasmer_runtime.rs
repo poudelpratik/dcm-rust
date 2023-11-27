@@ -1,0 +1,222 @@
+use crate::fragment_executor::FragmentExecutor;
+use crate::util::error::ApplicationError;
+use async_trait::async_trait;
+use byteorder::{LittleEndian, ReadBytesExt};
+use std::path::PathBuf;
+use wasmer::{Imports, Instance, MemoryView, Module, Store, Value, WasmSlice};
+
+pub(crate) struct WasmerRuntime;
+
+#[async_trait]
+impl FragmentExecutor for WasmerRuntime {
+    async fn execute(
+        fragment_id: &str,
+        function_name: &str,
+        params: &[serde_json::Value],
+    ) -> Result<String, ApplicationError> {
+        let mut fragment_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("fragments");
+        fragment_path = fragment_path
+            .join(format!("{}.wasm", fragment_id).as_str());
+        let function_name = format!("execute__{}", function_name);
+        WasmerInstance::new(fragment_path, function_name).execute(params)
+    }
+}
+
+const WASM_PAGE_SIZE: usize = 64 * 1024; // 64KiB
+
+pub(crate) struct WasmerInstance {
+    pub store: Store,
+    pub instance: Instance,
+    pub function_name: String,
+}
+
+impl WasmerInstance {
+    pub fn new(fragment_path: PathBuf, function_name: String) -> Self {
+        let mut store = Store::default();
+        let module = Module::from_file(&store, fragment_path).unwrap();
+        let instance = Instance::new(&mut store, &module, &Imports::new()).unwrap();
+        Self {
+            store,
+            instance,
+            function_name,
+        }
+    }
+
+    pub fn execute(&mut self, params: &[serde_json::Value]) -> Result<String, ApplicationError> {
+        let func = self.instance.exports.get_function(&self.function_name)?;
+        let memory = self.instance.exports.get_memory("memory")?;
+
+        let mut args: Vec<u8> = Vec::new();
+        for param in params.iter() {
+            let param_as_bytes = rmp_serde::to_vec_named(param)?; // Serialize the parameter to MessagePack format
+            let bytes_len = (param_as_bytes.len() as u32).to_le_bytes();
+
+            // Pad args to the next 4-byte boundary
+            while args.len() % 4 != 0 {
+                args.push(0);
+            }
+
+            args.extend_from_slice(&bytes_len); // Extend args with the length bytes
+            args.extend(&param_as_bytes); // Extend args with the parameter bytes
+        }
+
+        // grow memory if needed
+        let total_length = args.len();
+        let required_pages = (total_length + WASM_PAGE_SIZE - 1) / WASM_PAGE_SIZE;
+        memory.grow(&mut self.store, required_pages as u32)?;
+
+        // Allocate memory in WebAssembly and get the pointer
+        let alloc_func = self.instance.exports.get_function("alloc")?;
+        let ptr_value = alloc_func.call(&mut self.store, &[Value::I32(total_length as i32)])?;
+        let ptr = match ptr_value.first() {
+            Some(Value::I32(ptr)) => ptr,
+            _ => Err(ApplicationError::WasmError {
+                message: "Unable to get pointer from WebAssembly".to_string(),
+            })?,
+        };
+
+        // Get the memory view, write bytes to memory, and call the function
+        let view = memory.view(&self.store);
+        view.write(*ptr as u64, &args)?;
+        let result = func.call(
+            &mut self.store,
+            &[Value::I32(*ptr), Value::I32(params.len() as i32)],
+        )?;
+
+        match result.first() {
+            Some(Value::I32(pointer)) => {
+                let view = memory.view(&self.store);
+                let output_len = {
+                    let bytes = read(&view, *pointer as u64, 4)?;
+                    bytes.as_slice().read_u32::<LittleEndian>()?
+                };
+                let output_bytes = read(&view, (*pointer as u64) + 4, output_len as u64)?;
+                // Deserialize the output bytes to a string
+                let output_str: String = rmp_serde::from_slice(output_bytes.as_slice())?;
+                Ok(output_str)
+            }
+            _ => Err(ApplicationError::WasmError {
+                message: "Unable to get result from WebAssembly".to_string(),
+            }),
+        }
+    }
+}
+
+fn read(view: &MemoryView<'_>, offset: u64, length: u64) -> Result<Vec<u8>, ApplicationError> {
+    Ok(WasmSlice::new(view, offset, length)?.read_to_vec()?)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use serde_derive::{Deserialize, Serialize};
+    use std::str::FromStr;
+
+    const FRAGMENT_PATH: &str = "fragments";
+
+    #[derive(Serialize, Deserialize, Debug)]
+    struct Test {
+        a: i32,
+        b: String,
+        c: Vec<i32>,
+    }
+
+    #[test]
+    fn test_execute_wasm_surface_area_of_sphere() {
+        let params: Vec<serde_json::Value> = vec![serde_json::Value::from(5.0)];
+        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("surface_area_of_sphere.wasm");
+        let function_name = "execute__surface_area_of_sphere".to_string();
+        WasmerInstance::new(fragment_path, function_name)
+            .execute(&params)
+            .expect("TODO: panic message");
+    }
+
+    #[test]
+    fn test_execute_wasm_add() {
+        let mut params: Vec<serde_json::Value> = Vec::new();
+        params.push(serde_json::Value::from(8));
+        params.push(serde_json::Value::from(456));
+        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("add.wasm");
+        let function_name = "execute__add".to_string();
+        let result = WasmerInstance::new(fragment_path, function_name)
+            .execute(&params)
+            .expect("TODO: panic message");
+        println!("Result: {}", result);
+    }
+
+    #[test]
+    fn test_execute_object() {
+        let mut params: Vec<serde_json::Value> = Vec::new();
+        params.push(serde_json::Value::from(
+            r#"5bb7703f-8fe3-43fb-883a-a6d81fa4d58e"#,
+        ));
+        params.push(
+            serde_json::Value::from_str(
+                r#"{
+    "orders": [
+        {
+            "archived": true,
+            "id": "5bb7703f-8fe3-43fb-883a-a6d81fa4d58e",
+            "products": [
+                {
+                    "id": "e6857e0b-49a3-46ed-9c58-3c8069a95c48",
+                    "name": "Wanduhr",
+                    "price": 8,
+                    "quantity": 2
+                },
+                {
+                    "id": "592e1747-85bc-4c91-8de5-a42cf1a05303",
+                    "name": "Stuhl",
+                    "price": 21.99,
+                    "quantity": 1
+                }
+            ],
+            "starred": true,
+            "total": 37.989999999999995
+        }
+    ]
+}"#,
+            )
+            .unwrap(),
+        );
+        // params.push(serde_json::Value::from(48));
+        // params.push(serde_json::Value::from(96));
+
+        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("OrderManager.wasm");
+        let function_name = "execute__toggle_starred".to_string();
+        let result = WasmerInstance::new(fragment_path, function_name).execute(&params);
+        println!("Result: {:?}", result.unwrap());
+    }
+
+    #[test]
+    fn test_execute_wasm_area_of_cylinder() {
+        let mut params: Vec<serde_json::Value> = Vec::new();
+        params.push(serde_json::Value::from(45.0));
+        params.push(serde_json::Value::from(7861.0));
+        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("area_of_cylinder.wasm");
+        let function_name = "execute__area_of_cylinder".to_string();
+        let result = WasmerInstance::new(fragment_path, function_name).execute(&params);
+        println!("Result: {}", result.unwrap());
+    }
+
+    #[test]
+    fn test_execute_wasm_print_hello_no_parameter_no_return_value() {
+        let params: Vec<serde_json::Value> = Vec::new();
+        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("print_hello_world.wasm");
+        let function_name = "execute__print_hello_world".to_string();
+        WasmerInstance::new(fragment_path, function_name)
+            .execute(&params)
+            .expect("TODO: panic message");
+    }
+
+    #[test]
+    fn test_execute_wasm_take_two_struct_and_return_combined() {
+        let mut params: Vec<serde_json::Value> = Vec::new();
+        let fragment_path =
+            PathBuf::from(FRAGMENT_PATH).join("take_two_struct_and_return_combined.wasm");
+        let function_name = "execute__take_two_struct_and_return_combined".to_string();
+        WasmerInstance::new(fragment_path, function_name)
+            .execute(&params)
+            .expect("TODO: panic message");
+    }
+}

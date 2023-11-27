@@ -1,0 +1,28 @@
+fragments:
+  - id: 1
+    name: add
+    initial_execution_location: client
+    location: { filepath: src/shared/playground.rs }
+    category: Function
+  - id: 2
+    name: multiply
+    initial_execution_location: client
+    location: { filepath: src/shared/playground2.rs }
+    category: Function
+  - id: 3
+    name: Test
+    initial_execution_location: client
+    location: { filepath: src/shared/playground.rs }
+    category: Struct
+    impl_location: { filepath: src/shared/playground.rs }
+  - id: 4
+    name: Test2
+    initial_execution_location: client
+    location: { filepath: src/shared/playground2.rs }
+    category: Struct
+  - id: 5
+    name: generate_random_number
+    initial_execution_location: client
+    libs: ["rand"]
+    location: { filepath: src/shared/playground.rs }
+    category: Function

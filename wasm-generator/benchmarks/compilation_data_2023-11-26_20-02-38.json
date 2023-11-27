@@ -1,0 +1,240 @@
+[
+  {
+    "fragment_identifier": "find_primes",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.85,
+      "kb": 1890.57,
+      "bytes": 1935940.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 565429228
+    }
+  },
+  {
+    "fragment_identifier": "fibonacci",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.42,
+      "bytes": 1932713.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 452417339
+    }
+  },
+  {
+    "fragment_identifier": "count_vowels",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.42,
+      "bytes": 1932715.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 657460243
+    }
+  },
+  {
+    "fragment_identifier": "factorial",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.47,
+      "bytes": 1932771.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 268574531
+    }
+  },
+  {
+    "fragment_identifier": "sort_strings",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.86,
+      "kb": 1907.03,
+      "bytes": 1952803.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 691055291
+    }
+  },
+  {
+    "fragment_identifier": "sort_floats",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.86,
+      "kb": 1905.57,
+      "bytes": 1951301.0
+    },
+    "compilation_time": {
+      "secs": 14,
+      "nanos": 864368441
+    }
+  },
+  {
+    "fragment_identifier": "increment_number",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.46,
+      "bytes": 1932762.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 658597354
+    }
+  },
+  {
+    "fragment_identifier": "decrement_number",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.46,
+      "bytes": 1932762.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 178519767
+    }
+  },
+  {
+    "fragment_identifier": "add_floats",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.85,
+      "kb": 1892.95,
+      "bytes": 1938376.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 496437504
+    }
+  },
+  {
+    "fragment_identifier": "check",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.81,
+      "kb": 1850.17,
+      "bytes": 1894573.0
+    },
+    "compilation_time": {
+      "secs": 15,
+      "nanos": 361001961
+    }
+  },
+  {
+    "fragment_identifier": "validate_coupon_input",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.12,
+      "bytes": 1932411.0
+    },
+    "compilation_time": {
+      "secs": 16,
+      "nanos": 547217132
+    }
+  },
+  {
+    "fragment_identifier": "validate_coupon",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.26,
+      "bytes": 1932559.0
+    },
+    "compilation_time": {
+      "secs": 16,
+      "nanos": 395367825
+    }
+  },
+  {
+    "fragment_identifier": "calc_discount",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.84,
+      "kb": 1887.27,
+      "bytes": 1932564.0
+    },
+    "compilation_time": {
+      "secs": 16,
+      "nanos": 802756563
+    }
+  },
+  {
+    "fragment_identifier": "round_float",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.85,
+      "kb": 1889.77,
+      "bytes": 1935129.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 218437538
+    }
+  },
+  {
+    "fragment_identifier": "OrderedProduct",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.86,
+      "kb": 1902.05,
+      "bytes": 1947697.0
+    },
+    "compilation_time": {
+      "secs": 16,
+      "nanos": 865510711
+    }
+  },
+  {
+    "fragment_identifier": "Order",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.91,
+      "kb": 1952.48,
+      "bytes": 1999337.0
+    },
+    "compilation_time": {
+      "secs": 17,
+      "nanos": 251989015
+    }
+  },
+  {
+    "fragment_identifier": "OrderManager",
+    "release_mode": true,
+    "optimization_mode": false,
+    "wasm_size": {
+      "mb": 1.95,
+      "kb": 1992.51,
+      "bytes": 2040329.0
+    },
+    "compilation_time": {
+      "secs": 8,
+      "nanos": 362276390
+    }
+  }
+]

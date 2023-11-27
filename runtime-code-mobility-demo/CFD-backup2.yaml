@@ -1,0 +1,7 @@
+fragments:
+  - id: 5
+    name: generate_random_number
+    initial_execution_location: client
+    dependencies: []
+    libs: ["rand"]
+    location: { filepath: src/shared/playground.rs }

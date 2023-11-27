@@ -1,0 +1,114 @@
+[
+  {
+    "fragment_identifier": "find_primes",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.17,
+      "kb": 175.35,
+      "bytes": 179558.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 327266669
+    }
+  },
+  {
+    "fragment_identifier": "fibonacci",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.17,
+      "kb": 169.5,
+      "bytes": 173568.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 95367315
+    }
+  },
+  {
+    "fragment_identifier": "count_vowels",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.17,
+      "kb": 171.4,
+      "bytes": 175511.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 87272903
+    }
+  },
+  {
+    "fragment_identifier": "factorial",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.17,
+      "kb": 169.44,
+      "bytes": 173507.0
+    },
+    "compilation_time": {
+      "secs": 6,
+      "nanos": 999300943
+    }
+  },
+  {
+    "fragment_identifier": "generate_random_number",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.12,
+      "kb": 120.18,
+      "bytes": 123067.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 136034250
+    }
+  },
+  {
+    "fragment_identifier": "OrderedProduct",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.18,
+      "kb": 186.74,
+      "bytes": 191221.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 508657662
+    }
+  },
+  {
+    "fragment_identifier": "Order",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.25,
+      "kb": 258.48,
+      "bytes": 264682.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 994576716
+    }
+  },
+  {
+    "fragment_identifier": "OrderManager",
+    "release_mode": false,
+    "optimization_mode": true,
+    "wasm_size": {
+      "mb": 0.3,
+      "kb": 304.58,
+      "bytes": 311894.0
+    },
+    "compilation_time": {
+      "secs": 7,
+      "nanos": 729795472
+    }
+  }
+]
