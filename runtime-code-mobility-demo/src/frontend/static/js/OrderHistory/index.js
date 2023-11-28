@@ -190,12 +190,7 @@ export default class OrderHistory {
             featureDiv: mostSpentFeatureDiv,
             resultDisplay: mostSpentResultDisplay
         } = createFeature('See most invested product', async () => {
-            let mostSpentProduct = await get_most_invested_product(orders);
-            if (mostSpentProduct === null) {
-                mostSpentResultDisplay.textContent = `No orders found`;
-                return;
-            }
-            mostSpentResultDisplay.textContent = `${mostSpentProduct.name} (Total Amount: ${mostSpentProduct.totalAmount.toFixed(2)})`;
+            mostSpentResultDisplay.textContent = `Feature not implemented yet`;
         });
 
         // Most Bought Product feature
@@ -203,13 +198,9 @@ export default class OrderHistory {
             featureDiv: mostBoughtFeatureDiv,
             resultDisplay: mostBoughtResultDisplay
         } = createFeature('See most bought product', async () => {
-            let mostBoughtProduct = await get_most_bought_product(orders);
-            if (mostBoughtProduct === null) {
-                mostBoughtResultDisplay.textContent = `No orders found`;
-                return;
-            }
-            mostBoughtResultDisplay.textContent = `${mostBoughtProduct.name} (Total Quantity: ${mostBoughtProduct.totalQuantity})`;
+            mostBoughtResultDisplay.textContent = `Feature not implemented yet`;
         });
+
 
         // Append both features to the actions container
         actionsDiv.appendChild(mostSpentFeatureDiv);

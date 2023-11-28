@@ -14,7 +14,7 @@ export default class CodeDistributionManager {
 
     async init() {
         await this.fragmentRegistry.init();
-        await this.webSocketClient.init();
+        await this.webSocketClient.init(this.fragmentRegistry);
         this.fragmentExecutor = new FragmentExecutor(this.fragmentRegistry, this.configuration);
         await this.fragmentExecutor.init();
         new ExecutionLocationSelector(this);

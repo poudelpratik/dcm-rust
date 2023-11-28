@@ -32,18 +32,18 @@ export default class WebSocketClient {
         this.#maxReconnectAttempts = config.maxReconnectAttempts;
     }
 
-    async init() {
-        await this.establishConnection();
+    async init(fragmentRegistry) {
+        await this.establishConnection(fragmentRegistry);
     }
 
-    async establishConnection() {
+    async establishConnection(fragmentRegistry) {
         let websocketUrl = window.location.hostname + ':'
             + this.config.codeDistributorPort
             + '/ws';
         websocketUrl = window.location.protocol === 'https:' ? `wss://${websocketUrl}` : `ws://${websocketUrl}`;
         this.socket = new WebSocket(websocketUrl);
 
-        this.socket.onopen = () => this.onOpen();
+        this.socket.onopen = () => this.onOpen(fragmentRegistry);
         this.socket.onmessage = (event) => this.onMessage(event);
         this.socket.onclose = () => {
             this.onClose();
@@ -65,7 +65,7 @@ export default class WebSocketClient {
         }
     }
 
-    onOpen() {
+    onOpen(fragmentRegistry) {
         this.#reconnectAttempts = 0;
         clearInterval(this.#globalReconnectIntervalTimer);
         const websocketStatus = selectElement('#websocketStatus');
@@ -79,6 +79,11 @@ export default class WebSocketClient {
             connectionIcon.classList.remove('trigger');
         }, 200);
         console.log('WebSocket Client Connected');
+
+        this.sendMessage(MESSAGE_TYPES.UPDATE_FRAGMENTS, Array.from(fragmentRegistry.fragmentMap, ([key, value]) => ({
+            ['fragment_id']: key,
+            ['execution_location']: value
+        })));
     }
 
     onClose() {

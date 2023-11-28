@@ -116,6 +116,7 @@ mod tests {
 
     #[test]
     fn test_factorial() {
+        println!("factorial: {}", factorial(20));
         assert_eq!(factorial(5), 120);
     }
 }
