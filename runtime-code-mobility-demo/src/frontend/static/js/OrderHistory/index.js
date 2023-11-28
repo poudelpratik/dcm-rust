@@ -190,6 +190,12 @@ export default class OrderHistory {
             featureDiv: mostSpentFeatureDiv,
             resultDisplay: mostSpentResultDisplay
         } = createFeature('See most invested product', async () => {
+            // let mostSpentProduct = await get_most_invested_product(orders); //call the imported function
+            // if (mostSpentProduct === null) {
+            //     mostSpentResultDisplay.textContent = `No orders found`;
+            //     return;
+            // }
+            // mostSpentResultDisplay.textContent = `${mostSpentProduct.name} (Total Amount: ${mostSpentProduct.totalAmount.toFixed(2)})`;
             mostSpentResultDisplay.textContent = `Feature not implemented yet`;
         });
 
@@ -198,9 +204,14 @@ export default class OrderHistory {
             featureDiv: mostBoughtFeatureDiv,
             resultDisplay: mostBoughtResultDisplay
         } = createFeature('See most bought product', async () => {
+            // let mostBoughtProduct = await get_most_bought_product(orders); //call the imported function
+            // if (mostBoughtProduct === null) {
+            //     mostBoughtResultDisplay.textContent = `No orders found`;
+            //     return;
+            // }
+            // mostBoughtResultDisplay.textContent = `${mostBoughtProduct.name} (Total Quantity: ${mostBoughtProduct.totalQuantity})`;
             mostBoughtResultDisplay.textContent = `Feature not implemented yet`;
         });
-
 
         // Append both features to the actions container
         actionsDiv.appendChild(mostSpentFeatureDiv);
@@ -209,37 +220,4 @@ export default class OrderHistory {
         // Append the actions container to the main container
         container.appendChild(actionsDiv);
     }
-
-}
-
-function get_most_bought_product(orders) {
-    const quantities = {};
-
-    orders.forEach(order => {
-        order.products.forEach(product => {
-            quantities[product.name] = (quantities[product.name] || 0) + product.quantity;
-        });
-    });
-
-    const mostBought = Object.entries(quantities).reduce((max, curr) => {
-        return (curr[1] > (max[1] || 0)) ? curr : max;
-    }, []);
-
-    return mostBought.length ? { name: mostBought[0], totalQuantity: mostBought[1] } : null;
-}
-
-function get_most_invested_product(orders) {
-    const amounts = {};
-
-    orders.forEach(order => {
-        order.products.forEach(product => {
-            amounts[product.name] = (amounts[product.name] || 0) + product.quantity * product.price;
-        });
-    });
-
-    const mostInvested = Object.entries(amounts).reduce((max, curr) => {
-        return (curr[1] > (max[1] || 0)) ? curr : max;
-    }, []);
-
-    return mostInvested.length ? { name: mostInvested[0], totalAmount: mostInvested[1] } : null;
 }
