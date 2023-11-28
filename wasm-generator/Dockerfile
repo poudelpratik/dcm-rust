@@ -15,14 +15,15 @@ WORKDIR /usr/src/app
 #RUN groupadd -g $GID $GROUP \
 #  && useradd -m -g $GID -u $UID $USER
 
+COPY src ./src
 # Copy the Cargo.toml, Cargo.lock, and Config.toml files
 COPY Cargo.toml Cargo.lock Config.toml ./
-COPY src ./src
+
 
 # Build the application
 RUN cargo build --release
 
-FROM rust:1.73
+FROM rust:1.74
 
 # Copy the binary from the builder stage. Change this from debug to release later, currently it is in debug for development purposes for its reduced compilation time.
 COPY --from=builder /usr/src/app/target/release/wasm-generator /usr/local/bin/
@@ -43,17 +44,10 @@ RUN apt update && \
     apt install -y binaryen && \
     rm -rf /var/lib/apt/lists/*
 
-
 #USER $USER
 
 # Set the current working directory for runtime inside the container. This is specially so that the Config.toml file can be found.
 WORKDIR /usr/local/bin/
 
-# Copy the entrypoint script
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
-
 # Run the application
-#CMD ["wasm-generator"]
-# Set the entrypoint script as the entry point of the container
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+CMD ["wasm-generator"]

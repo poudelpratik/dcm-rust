@@ -189,12 +189,11 @@ mod tests {
     }
 
     #[test]
-    fn test_execute_wasm_area_of_cylinder() {
+    fn test_execute_wasm_fibonacci() {
         let mut params: Vec<serde_json::Value> = Vec::new();
-        params.push(serde_json::Value::from(45.0));
-        params.push(serde_json::Value::from(7861.0));
-        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("area_of_cylinder.wasm");
-        let function_name = "execute__area_of_cylinder".to_string();
+        params.push(serde_json::Value::from(10));
+        let fragment_path = PathBuf::from(FRAGMENT_PATH).join("fibonacci.wasm");
+        let function_name = "execute__fibonacci".to_string();
         let result = WasmerInstance::new(fragment_path, function_name).execute(&params);
         println!("Result: {}", result.unwrap());
     }

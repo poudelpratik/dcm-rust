@@ -8,5 +8,7 @@ async fn main() {
     // initialize configuration
     let config = Configuration::default();
     config.init_logger();
+
+    // initialize code distributor
     init(config).await;
 }

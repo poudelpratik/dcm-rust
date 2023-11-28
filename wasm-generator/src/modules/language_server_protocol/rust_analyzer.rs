@@ -282,43 +282,6 @@ impl RustAnalyzerClient {
         }
     }
 
-    // async fn references(
-    //     &mut self,
-    //     text_document_url: &str,
-    //     line: u32,
-    //     character: u32,
-    // ) -> Result<Vec<Location>, ApplicationError> {
-    //     let message_id = self.id_generator.next_id();
-    //
-    //     let find_references_params = ReferenceParams {
-    //         text_document_position: TextDocumentPositionParams::new(
-    //             TextDocumentIdentifier::new(Url::parse(text_document_url).unwrap()),
-    //             Position::new(line, character),
-    //         ),
-    //         work_done_progress_params: Default::default(),
-    //         partial_result_params: Default::default(),
-    //         context: ReferenceContext {
-    //             include_declaration: false,
-    //         },
-    //     };
-    //     let jsonrpc_request = JsonRpcRequest::new(
-    //         "textDocument/references",
-    //         Some(json!(find_references_params)),
-    //         Some(message_id),
-    //     );
-    //
-    //     let response = self.send_request(jsonrpc_request).await?.unwrap();
-    //     if let Some(find_references_response) = response.result {
-    //         let find_references_response: Vec<Location> =
-    //             serde_json::from_value(find_references_response)?;
-    //         Ok(find_references_response)
-    //     } else {
-    //         Err(ApplicationError::TypeConversionError {
-    //             message: "No result in find references response".to_string(),
-    //         })?
-    //     }
-    // }
-
     async fn document_highlight(
         &mut self,
         text_document_url: &str,
@@ -353,17 +316,17 @@ impl RustAnalyzerClient {
         }
     }
 
-    // async fn shutdown(&mut self) -> Result<(), ApplicationError> {
-    //     let jsonrpc_request = JsonRpcRequest::new("shutdown", Some(json!({})), None);
-    //     self.send_request(jsonrpc_request).await?;
-    //     Ok(())
-    // }
-    //
-    // async fn exit(&mut self) -> Result<(), ApplicationError> {
-    //     let jsonrpc_request = JsonRpcRequest::new("exit", Some(json!({})), None);
-    //     self.send_request(jsonrpc_request).await?;
-    //     Ok(())
-    // }
+    async fn shutdown(&mut self) -> Result<(), ApplicationError> {
+        let jsonrpc_request = JsonRpcRequest::new("shutdown", Some(json!({})), None);
+        self.send_request(jsonrpc_request).await?;
+        Ok(())
+    }
+
+    async fn exit(&mut self) -> Result<(), ApplicationError> {
+        let jsonrpc_request = JsonRpcRequest::new("exit", Some(json!({})), None);
+        self.send_request(jsonrpc_request).await?;
+        Ok(())
+    }
 }
 
 #[async_trait::async_trait]
@@ -436,6 +399,12 @@ impl LspClient for RustAnalyzerClient {
             .map(|dh| dh.range.into())
             .collect();
         Ok(rust_item_location)
+    }
+
+    async fn shutdown(&mut self) -> Result<(), ApplicationError> {
+        self.shutdown().await?;
+        self.exit().await?;
+        Ok(())
     }
 }
 

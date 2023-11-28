@@ -92,4 +92,6 @@ pub trait LspClient {
         line: u32,
         column: u32,
     ) -> Result<Vec<RustItemPosition>, ApplicationError>;
+
+    async fn shutdown(&mut self) -> Result<(), ApplicationError>;
 }

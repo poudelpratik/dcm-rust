@@ -1,6 +1,6 @@
 // example of a function that runs for a long time and consumes much resources depending on the parameter
 /// @mobile
-pub fn find_primes(limit: u32) -> Vec<u32> {
+pub fn find_primes(limit: u64) -> Vec<u64> {
     let mut primes = Vec::new();
     'outer: for n in 2..=limit {
         for p in &primes {
@@ -42,7 +42,7 @@ pub fn find_primes(limit: u32) -> Vec<u32> {
 // }
 //
 /// @mobile
-pub fn fibonacci(n: u32) -> u32 {
+pub fn fibonacci(n: u64) -> u64 {
     match n {
         0 => 0,
         1 => 1,
@@ -51,13 +51,13 @@ pub fn fibonacci(n: u32) -> u32 {
 }
 
 /// @mobile
-pub fn count_vowels(s: &str) -> u32 {
+pub fn count_vowels(s: &str) -> u64 {
     let vowels = ['a', 'e', 'i', 'o', 'u', 'A', 'E', 'I', 'O', 'U'];
-    s.chars().filter(|c| vowels.contains(c)).count() as u32
+    s.chars().filter(|c| vowels.contains(c)).count() as u64
 }
 
 /// @mobile
-pub fn factorial(n: u32) -> u32 {
+pub fn factorial(n: u64) -> u64 {
     match n {
         0 => 1,
         _ => n * factorial(n - 1),
@@ -93,3 +93,29 @@ pub fn factorial(n: u32) -> u32 {
 // pub fn generate_random_number() -> u32 {
 //     fastrand::u32(..)
 // }
+
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_find_primes() {
+        assert_eq!(find_primes(10), vec![2, 3, 5, 7]);
+    }
+
+    #[test]
+    fn test_fibonacci() {
+        assert_eq!(fibonacci(10), 55);
+    }
+
+    #[test]
+    fn test_count_vowels() {
+        assert_eq!(count_vowels("hello"), 2);
+    }
+
+    #[test]
+    fn test_factorial() {
+        assert_eq!(factorial(5), 120);
+    }
+}

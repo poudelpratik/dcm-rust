@@ -44,6 +44,7 @@ export default class OrderHistory {
         <tr>
             <th>Order ID</th>
             <th>Products</th>
+            <th>Total Price</th>
             <th>Archived</th>
             <th>Starred</th>
         </tr>`;
@@ -55,7 +56,7 @@ export default class OrderHistory {
 
             tr.innerHTML = "";
             tr.innerHTML += `<td>${order.id}</td>`;
-            tr.innerHTML += `<td>${order.products.map(p => `${p.name} (Qty: ${p.quantity})`).join(', ')}</td>`;
+            tr.innerHTML += `<td>${order.products.map(p => `${p.name} (Qty: ${p.quantity})`).join(', ')}</td><td>${order.total.toFixed(2)}</td>`;
 
             const archiveTd = document.createElement('td');
             const archiveCheckbox = document.createElement('input');

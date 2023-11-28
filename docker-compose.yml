@@ -38,7 +38,7 @@ services:
     environment:
       app_port: 8081
     ports:
-      - "8081:8081"
+      - "8082:8081"
     command: cargo run --release
     profiles:
       - run-app
