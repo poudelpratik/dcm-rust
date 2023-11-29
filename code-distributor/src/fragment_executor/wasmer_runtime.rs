@@ -14,7 +14,7 @@ impl FragmentExecutor for WasmerRuntime {
         function_name: &str,
         params: &[serde_json::Value],
     ) -> Result<String, ApplicationError> {
-        let mut fragment_path = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("fragments");
+        let mut fragment_path = PathBuf::from("fragments");
         fragment_path = fragment_path
             .join(format!("{}.wasm", fragment_id).as_str());
         let function_name = format!("execute__{}", function_name);

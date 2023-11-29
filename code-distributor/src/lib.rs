@@ -27,7 +27,7 @@ pub async fn init(config: Configuration) {
     // Initialize the fragment registry
     // Parse executable_fragments.json file and store it in the fragment registry
     let final_fragments_json =
-        util::file_handler::read(&PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("fragments").join("executable_fragments.json"))
+        util::file_handler::read(&PathBuf::from("fragments").join("executable_fragments.json"))
             .expect("Unable to read executable_fragments.json file");
     let fragments = serde_json::from_str::<Vec<Fragment>>(final_fragments_json.as_str())
         .expect("Unable to parse executable_fragments.json file");

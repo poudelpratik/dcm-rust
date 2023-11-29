@@ -24,8 +24,7 @@ async fn main() {
             .service(
                 actix_files::Files::new(
                     "/static",
-                    std::path::Path::new(env!("CARGO_MANIFEST_DIR"))
-                        .join("src")
+                    std::path::Path::new("src")
                         .join("frontend")
                         .join("static"),
                 )

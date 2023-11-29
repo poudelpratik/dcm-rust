@@ -3,6 +3,7 @@ FROM rust:1.74 AS builder
 
 LABEL autodelete="true"
 LABEL maintainer="Pratik Poudel<pratikpoudel90@gmail.com>"
+ARG BUILD_MODE=debug
 
 # Set the current working directory inside the container
 WORKDIR /usr/src/app
@@ -21,12 +22,12 @@ COPY Cargo.toml Cargo.lock Config.toml ./
 
 
 # Build the application
-RUN cargo build --release
+RUN if [ "$BUILD_MODE" = "release" ] ; then cargo build --release; else cargo build; fi
 
 FROM rust:1.74
-
+ARG BUILD_MODE=debug
 # Copy the binary from the builder stage. Change this from debug to release later, currently it is in debug for development purposes for its reduced compilation time.
-COPY --from=builder /usr/src/app/target/release/wasm-generator /usr/local/bin/
+COPY --from=builder /usr/src/app/target/${BUILD_MODE}/wasm-generator /usr/local/bin/
 
 # Copy the Config.toml from the builder stage
 COPY --from=builder /usr/src/app/Config.toml /usr/local/bin/
@@ -37,9 +38,7 @@ RUN rustup component add rust-analyzer
 RUN rustup component add rustfmt
 # Install the rust-wasm toolchain
 RUN rustup target add wasm32-unknown-unknown
-#RUN rustup target add wasm32-wasi
-#RUN curl https://rustwasm.github.io/wasm-pack/installer/init.sh -sSf | sh
-# Install the binaryen for wasm-opt
+# Install the binaryen tool for wasm-opt
 RUN apt update && \
     apt install -y binaryen && \
     rm -rf /var/lib/apt/lists/*

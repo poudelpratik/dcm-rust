@@ -18,27 +18,21 @@ services:
       - generate-wasm
 
   code-distributor:
-    image: rust:1.74
-    volumes:
-      - ./code-distributor:/project
-    working_dir: /project
+    image: code-distributor
+    build: ./code-distributor
     environment:
       app_port: 51335
     ports:
       - "51335:51335"
-    command: cargo run --release
     profiles:
       - run-app
 
   demo-app:
-    image: rust:1.74
-    volumes:
-      - ./runtime-code-mobility-demo:/project
-    working_dir: /project
+    image: runtime-code-mobility-demo
+    build: ./runtime-code-mobility-demo
     environment:
       app_port: 8081
     ports:
       - "8081:8081"
-    command: cargo run --release
     profiles:
       - run-app
