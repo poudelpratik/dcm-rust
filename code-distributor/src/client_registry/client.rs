@@ -4,6 +4,7 @@ use crate::fragment_registry::FragmentRegistry;
 use crate::util::error::ApplicationError;
 use futures_util::stream::SplitSink;
 use futures_util::SinkExt;
+use log::info;
 use serde::Serialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
@@ -47,6 +48,27 @@ impl Client {
         self.send_message(update_fragments_data, Events::UpdateFragments)
             .await?;
         Ok(())
+    }
+
+    pub async fn on_connection(&mut self, tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>) {
+        self.connected = true;
+        info!("Client connected: {:?}", &self.uuid);
+        self.tx = Some(tx);
+        let update_fragments: Vec<UpdateFragmentData> = self
+            .fragment_registry
+            .lock()
+            .await
+            .fragments
+            .clone()
+            .into_iter()
+            .map(|fragment| UpdateFragmentData {
+                id: fragment.id,
+                execution_location: fragment.execution_location,
+            })
+            .collect();
+        self.send_message(update_fragments, Events::UpdateFragments)
+            .await
+            .ok();
     }
 
     async fn send_message<T>(&mut self, data: T, event: Events) -> Result<(), ApplicationError>

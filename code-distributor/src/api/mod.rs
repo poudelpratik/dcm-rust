@@ -1,12 +1,14 @@
-pub mod endpoints;
-
-use crate::client_registry::client_event_listener::UpdateFragmentData;
-use crate::ApplicationContext;
 use std::sync::Arc;
+
 use tokio::sync::Mutex;
 use uuid::Uuid;
 use warp::filters::BoxedFilter;
 use warp::{Filter, Reply};
+
+use crate::client_registry::client_event_listener::UpdateFragmentData;
+use crate::ApplicationContext;
+
+pub mod endpoints;
 
 pub(crate) fn create_routes(
     app_context: Arc<Mutex<ApplicationContext>>,
@@ -44,8 +46,8 @@ pub(crate) fn create_routes(
         .clone()
         .and(warp::path("auth"))
         .and(warp::post()) // Use POST method
-        .and(context.clone())
         .and(warp::header::headers_cloned())
+        .and(context.clone())
         .and_then(endpoints::authenticate);
 
     get_client

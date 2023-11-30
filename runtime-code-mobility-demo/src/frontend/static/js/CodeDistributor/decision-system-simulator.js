@@ -9,17 +9,7 @@ export default class DecisionSystemSimulator {
         this.auth = auth;
         this.createPopupUI(); // Call the function to create the UI when the class is instantiated
         this.populateFunctionSelect(); // Populate the select dropdown
-        document.querySelector('#selectExecutionLocation').addEventListener('click', () => this.showPopup());
-    }
-
-    async init() {
-        let storedRegistry = localStorage.getItem('fragmentRegistry');
-        if (storedRegistry !== null) {
-            await fetch(this.configuration.codeDistributorApiUrl + 'clients/' + this.auth.client_id, {
-                method: 'PUT',
-                body: storedRegistry
-            });
-        }
+        document.querySelector('#decisionSystemSimulator').addEventListener('click', () => this.showPopup());
     }
 
     // Method to create the popup UI and append it to the document body
@@ -110,6 +100,9 @@ export default class DecisionSystemSimulator {
         const executionLocation = document.getElementById('executionLocation').checked ? 'Server' : 'Client';
         const selectedFuncId = document.getElementById('fragmentSelect').value;
         await fetch(this.configuration.codeDistributorApiUrl + 'clients/' + this.auth.client_id, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
             method: 'PUT',
             body: JSON.stringify([{id: selectedFuncId, execution_location: executionLocation}])
         });

@@ -3,11 +3,13 @@ use crate::client_registry::client_event_listener::UpdateFragmentData;
 use crate::util::error::ApplicationError;
 use client::Client;
 use futures_util::future::join_all;
+use futures_util::stream::SplitSink;
 use log::info;
 use std::collections::HashMap;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
+use warp::ws::{Message, WebSocket};
 
 pub mod client;
 pub mod client_event_listener;
@@ -26,16 +28,19 @@ impl ClientRegistry {
 
     pub fn register(&mut self, uuid: Uuid, client: Arc<Mutex<Client>>) {
         self.clients.insert(uuid, client);
-        info!("Client authenticated: {:?}", &uuid);
+        info!("New Client Registered: {:?}", &uuid);
     }
 
-    pub async fn handle_connection(&mut self, uuid: Uuid) {
+    pub async fn handle_connection(
+        &mut self,
+        uuid: Uuid,
+        tx: Arc<Mutex<SplitSink<WebSocket, Message>>>,
+    ) {
         let client = self.clients.get(&uuid);
         if let Some(client) = client {
             let mut client = client.lock().await;
-            client.connected = true;
+            client.on_connection(tx).await;
         }
-        info!("Client connected: {:?}", &uuid);
     }
 
     pub async fn handle_disconnection(&mut self, uuid: Uuid) {

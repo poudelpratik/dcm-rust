@@ -2,12 +2,12 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <title>DCM-RS Demo</title>
-    <link rel="stylesheet" href="static/libraries/bootstrap-5.3.2-dist/css/bootstrap.css">
-    <link rel="preload" href="static/fonts/lato.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="preload" href="static/fonts/lato-latin-ext.woff2" as="font" type="font/woff2" crossorigin>
-    <link rel="stylesheet" type="text/css" href="static/css/global.min.css" />
+    <link href="static/libraries/bootstrap-5.3.2-dist/css/bootstrap.css" rel="stylesheet">
+    <link as="font" crossorigin href="static/fonts/lato.woff2" rel="preload" type="font/woff2">
+    <link as="font" crossorigin href="static/fonts/lato-latin-ext.woff2" rel="preload" type="font/woff2">
+    <link href="static/css/global.min.css" rel="stylesheet" type="text/css"/>
     <script src="static/libraries/bootstrap-5.3.2-dist/js/bootstrap.js"></script>
     <script src="static/js/index.js" type="module"></script>
 </head>
@@ -18,12 +18,12 @@
         <nav>
             <div id="cd-status">
                 <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1em"
-                        height="1em"
-                        viewBox="0 0 24 24"
                         fill="currentColor"
+                        height="1em"
                         id="client-icon"
+                        viewBox="0 0 24 24"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
                 >
                     <title>Laptop Icon</title>
                     <path
@@ -32,12 +32,12 @@
                 </svg>
                 <span id="connection-icon"></span>
                 <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="1em"
-                        height="1em"
-                        viewBox="0 0 24 24"
                         fill="currentColor"
+                        height="1em"
                         id="server-icon"
+                        viewBox="0 0 24 24"
+                        width="1em"
+                        xmlns="http://www.w3.org/2000/svg"
                 >
                     <title>Server Icon</title>
                     <path
@@ -46,10 +46,18 @@
                 </svg>
             </div>
             <ul aria-label="Navigation">
-                <li><button class="btn btn-link" id="linkWebShop">Web Shop</button></li>
-                <li><button class="btn btn-link" id="linkOrderHistory">Order History</button></li>
-                <li><button class="btn btn-link" id="linkPlayground">WASM Playground</button></li>
-                <li><button class="btn btn-info" id="selectExecutionLocation">Select Execution Location</button></li>
+                <li>
+                    <button class="btn btn-link" id="linkWebShop">Web Shop</button>
+                </li>
+                <li>
+                    <button class="btn btn-link" id="linkOrderHistory">Order History</button>
+                </li>
+                <li>
+                    <button class="btn btn-link" id="linkPlayground">WASM Playground</button>
+                </li>
+                <li>
+                    <button class="btn btn-info" id="decisionSystemSimulator">Decision System Simulator</button>
+                </li>
             </ul>
         </nav>
     </div>
@@ -59,7 +67,7 @@
         <div class="main-header">
             <h1 id="page-title">Web Shop</h1>
             <span
-            >Websocket <span id="websocketStatus" data-status="offline"></span
+            >Websocket <span data-status="offline" id="websocketStatus"></span
             ></span>
         </div>
         <div id="main-content">
@@ -67,10 +75,10 @@
                 <div class="product" data-shopid="mug">
                     <div class="product__cover">
                         <img
-                                class="img--mug"
-                                src="static/img/mug.jpg"
-                                height="370"
                                 alt="Eine weiße Tasse auf der Fensterbank."
+                                class="img--mug"
+                                height="370"
+                                src="static/img/mug.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -78,16 +86,16 @@
                             <p class="product__title">Tasse</p>
                             <p class="product__price">15,99 €</p>
                         </div>
-                        <button type="button" type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="clock">
                     <div class="product__cover">
                         <img
-                                class="img--clock"
-                                src="static/img/clock.jpg"
-                                height="370"
                                 alt="Eine weiße Wanduhr mit pinkem Rahmen an einer Wand."
+                                class="img--clock"
+                                height="370"
+                                src="static/img/clock.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -95,16 +103,16 @@
                             <p class="product__title">Wanduhr</p>
                             <p class="product__price">8,00 €</p>
                         </div>
-                        <button type="button" type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="chair">
                     <div class="product__cover">
                         <img
-                                class="img--chair"
-                                src="static/img/chair.jpg"
-                                height="370"
                                 alt="Ein grauer Stoffstuhl mit vier Holzbeinen."
+                                class="img--chair"
+                                height="370"
+                                src="static/img/chair.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -112,16 +120,16 @@
                             <p class="product__title">Stuhl</p>
                             <p class="product__price">21,99 €</p>
                         </div>
-                        <button type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="lamp">
                     <div class="product__cover">
                         <img
-                                class="img--lamp"
-                                src="static/img/lamp.jpg"
-                                height="370"
                                 alt="Eine weißte Tischlampe mit Schirm."
+                                class="img--lamp"
+                                height="370"
+                                src="static/img/lamp.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -129,16 +137,16 @@
                             <p class="product__title">Tischlampe</p>
                             <p class="product__price">12,00 €</p>
                         </div>
-                        <button type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="sunglasses">
                     <div class="product__cover">
                         <img
-                                class="img--sunglasses"
-                                src="static/img/sunglasses.jpg"
-                                height="370"
                                 alt="Getönte Sonnenbrille mit pinkem Rahmen und großen Gläsern."
+                                class="img--sunglasses"
+                                height="370"
+                                src="static/img/sunglasses.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -146,16 +154,16 @@
                             <p class="product__title">Sonnenbrille</p>
                             <p class="product__price">9,00 €</p>
                         </div>
-                        <button type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="mask">
                     <div class="product__cover">
                         <img
-                                class="img--mask"
-                                src="static/img/mask.jpg"
-                                height="370"
                                 alt="Eine grüne chirurgische Maske."
+                                class="img--mask"
+                                height="370"
+                                src="static/img/mask.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -163,16 +171,16 @@
                             <p class="product__title">Maske</p>
                             <p class="product__price">1,20 €</p>
                         </div>
-                        <button type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="controller">
                     <div class="product__cover">
                         <img
-                                class="img--controller"
-                                src="static/img/controller.jpg"
-                                height="370"
                                 alt="Ein schwarzer XBox Controller."
+                                class="img--controller"
+                                height="370"
+                                src="static/img/controller.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -180,16 +188,16 @@
                             <p class="product__title">Controller</p>
                             <p class="product__price">55,00 €</p>
                         </div>
-                        <button type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button">Kaufen</button>
                     </div>
                 </div>
                 <div class="product" data-shopid="bag">
                     <div class="product__cover">
                         <img
-                                class="img--bag"
-                                src="static/img/bag.jpg"
-                                height="370"
                                 alt="Eine braune Aktentasche."
+                                class="img--bag"
+                                height="370"
+                                src="static/img/bag.jpg"
                         />
                     </div>
                     <div class="product__content">
@@ -197,7 +205,7 @@
                             <p class="product__title">Aktentasche</p>
                             <p class="product__price">25,50 €</p>
                         </div>
-                        <button type="button" class="btn">Kaufen</button>
+                        <button class="btn" type="button">Kaufen</button>
                     </div>
                 </div>
             </div>
@@ -207,30 +215,30 @@
                     <div class="steps">
                         <div class="step">
                             <input
-                                    type="radio"
-                                    name="MultistepForm"
-                                    id="multiStep1"
                                     checked
+                                    id="multiStep1"
+                                    name="MultistepForm"
+                                    type="radio"
                             />
                             <label for="multiStep1">Schritt 1 von 3: Übersicht</label>
                             <span>1. Übersicht</span>
                         </div>
                         <div class="step">
                             <input
-                                    type="radio"
-                                    name="MultistepForm"
-                                    id="multiStep2"
                                     disabled
+                                    id="multiStep2"
+                                    name="MultistepForm"
+                                    type="radio"
                             />
                             <label for="multiStep2">Schritt 2 von 3: Bestellung</label>
                             <span>2. Bestellung</span>
                         </div>
                         <div class="step">
                             <input
-                                    type="radio"
-                                    name="MultistepForm"
-                                    id="multiStep3"
                                     disabled
+                                    id="multiStep3"
+                                    name="MultistepForm"
+                                    type="radio"
                             />
                             <label for="multiStep3">Schritt 3 von 3: Zusammenfassung</label>
                             <span>3. Zusammenfassung</span>
@@ -238,11 +246,11 @@
                     </div>
                     <!-- SR starts with 33% -->
                     <div
+                            aria-valuemax="3"
+                            aria-valuemin="0"
+                            aria-valuenow="1"
                             class="progressbar"
                             role="progressbar"
-                            aria-valuemin="0"
-                            aria-valuemax="3"
-                            aria-valuenow="1"
                             style="--progressMaxValue: 3; --progressValue: 1"
                     >
                         <span class="progressbar__progress"> </span>
@@ -254,80 +262,82 @@
                             <div class="table-wrapper" hidden>
                                 <div class="table-controls table-controls--mobile">
                                     <button
-                                            type="button"
-                                            id="mobileTableClearBtn"
-                                            class="btn btn--small"
                                             aria-label="Warenkorb leeren"
+                                            class="btn btn--small"
+                                            id="mobileTableClearBtn"
+                                            type="button"
                                     >
                                         <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="22"
+                                                aria-hidden="true"
                                                 height="22"
                                                 viewBox="0 0 24 24"
-                                                aria-hidden="true"
+                                                width="22"
+                                                xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <g
-                                                    stroke-width="1.5"
-                                                    stroke="#d11111"
                                                     fill="none"
+                                                    stroke="#d11111"
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
+                                                    stroke-width="1.5"
                                             >
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <line x1="4" y1="7" x2="20" y2="7" />
-                                                <line x1="10" y1="11" x2="10" y2="17" />
-                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                                <path d="M0 0h24v24H0z" fill="none" stroke="none"/>
+                                                <line x1="4" x2="20" y1="7" y2="7"/>
+                                                <line x1="10" x2="10" y1="11" y2="17"/>
+                                                <line x1="14" x2="14" y1="11" y2="17"/>
                                                 <path
                                                         d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
                                                 />
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                            </g></svg
-                                        ><span>leeren</span>
+                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                                            </g>
+                                        </svg
+                                        >
+                                        <span>leeren</span>
                                     </button>
                                     <button
-                                            type="button"
-                                            id="mobileSortBtn"
-                                            class="btn btn--small btn--sort"
-                                            aria-label="Sortieroptionen öffnen"
                                             aria-expanded="false"
+                                            aria-label="Sortieroptionen öffnen"
+                                            class="btn btn--small btn--sort"
+                                            id="mobileSortBtn"
+                                            type="button"
                                     >
                                         <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
+                                                aria-hidden="true"
                                                 height="24"
                                                 viewBox="0 0 24 24"
-                                                aria-hidden="true"
+                                                width="24"
+                                                xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <g
-                                                    stroke-width="1.5"
-                                                    stroke="#7a7a7a"
                                                     fill="none"
+                                                    stroke="#7a7a7a"
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
+                                                    stroke-width="1.5"
                                             >
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <polyline points="8 9 12 5 16 9" />
-                                                <polyline points="16 15 12 19 8 15" />
+                                                <path d="M0 0h24v24H0z" fill="none" stroke="none"/>
+                                                <polyline points="8 9 12 5 16 9"/>
+                                                <polyline points="16 15 12 19 8 15"/>
                                             </g>
                                         </svg>
                                         <span>sortieren</span>
                                     </button>
-                                    <div id="mobileSortModal" class="modal">
+                                    <div class="modal" id="mobileSortModal">
                                         <div
-                                                class="modal__dialog"
                                                 aria-label="Warenkorbsortierung"
-                                                role="dialog"
                                                 aria-modal="true"
+                                                class="modal__dialog"
+                                                role="dialog"
                                         >
                                             <div class="modal__content">
                                                 <header class="modal__header">
                                                     Warenkorbsortierung
                                                     <button
-                                                            type="button"
-                                                            type="button"
+                                                            aria-label="Sortieroptionen schließen"
                                                             class="btn"
                                                             data-dismiss="modal"
-                                                            aria-label="Sortieroptionen schließen"
+                                                            type="button"
+                                                            type="button"
                                                     >
                                                         <span aria-hidden="true">&times;</span>
                                                     </button>
@@ -337,7 +347,7 @@
                                                         <div
                                                                 class="toggle toggle--options glide text-hidden"
                                                         >
-                                                            <input id="toggle-sort-order" type="checkbox" />
+                                                            <input id="toggle-sort-order" type="checkbox"/>
                                                             <label for="toggle-sort-order">
                                   <span
                                           class="toggle__body"
@@ -354,25 +364,25 @@
                                                         <legend>Filterkriterien</legend>
                                                         <label>
                                                             <input
-                                                                    type="radio"
-                                                                    name="Filterkriterien"
                                                                     id="radio_Produktname"
+                                                                    name="Filterkriterien"
+                                                                    type="radio"
                                                             />
                                                             <span>Produktname</span>
                                                         </label>
                                                         <label>
                                                             <input
-                                                                    type="radio"
-                                                                    name="Filterkriterien"
                                                                     id="radio_Stueckpreis"
+                                                                    name="Filterkriterien"
+                                                                    type="radio"
                                                             />
                                                             <span>Stückpreis</span>
                                                         </label>
                                                         <label>
                                                             <input
-                                                                    type="radio"
-                                                                    name="Filterkriterien"
                                                                     id="radio_Mengenpreis"
+                                                                    name="Filterkriterien"
+                                                                    type="radio"
                                                             />
                                                             <span>Mengenpreis</span>
                                                         </label>
@@ -382,7 +392,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <table class="table" id="warenkorb" aria-label="Warenkorb">
+                                <table aria-label="Warenkorb" class="table" id="warenkorb">
                                     <caption class="visually-hidden">
                                         Auflistung aller zu kaufenden Produkte.
                                     </caption>
@@ -390,19 +400,19 @@
                                     <tr>
                                         <th>
                                             <button
-                                                    type="button"
-                                                    class="btn warenkorb__btn--tablehead"
                                                     aria-label="Produktname aufsteigend sortieren"
+                                                    class="btn warenkorb__btn--tablehead"
                                                     id="btn_Produktname"
+                                                    type="button"
                                             >
                                                 <span>Produktname</span>
                                                 <svg
-                                                        class="table-sorting-icons"
                                                         aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
+                                                        class="table-sorting-icons"
                                                         height="24"
                                                         viewBox="0 0 24 24"
+                                                        width="24"
+                                                        xmlns="http://www.w3.org/2000/svg"
                                                 >
                                                     <g class="icon__filter" fill="#7a7a7a">
                                                         <path
@@ -411,45 +421,45 @@
                                                     </g>
                                                     <g
                                                             class="icon__sort-ascending"
-                                                            stroke-width="1.5"
-                                                            stroke="#1F1F1F"
                                                             fill="none"
+                                                            stroke="#1F1F1F"
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
+                                                            stroke-width="1.5"
                                                     >
                                                         <title>aufsteigend sortieren</title>
                                                         <path
-                                                                stroke="none"
                                                                 d="M0 0h24v24H0z"
                                                                 fill="none"
+                                                                stroke="none"
                                                         />
                                                         <path
                                                                 d="M15 10v-5c0 -1.38 .62 -2 2 -2s2 .62 2 2v5m0 -3h-4"
                                                         />
-                                                        <path d="M19 21h-4l4 -7h-4" />
-                                                        <path d="M4 15l3 3l3 -3" />
-                                                        <path d="M7 6v12" />
+                                                        <path d="M19 21h-4l4 -7h-4"/>
+                                                        <path d="M4 15l3 3l3 -3"/>
+                                                        <path d="M7 6v12"/>
                                                     </g>
                                                     <g
                                                             class="icon__sort-descending"
-                                                            stroke-width="1.5"
-                                                            stroke="#1F1F1F"
                                                             fill="none"
+                                                            stroke="#1F1F1F"
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
+                                                            stroke-width="1.5"
                                                     >
                                                         <title>absteigend sortieren</title>
                                                         <path
-                                                                stroke="none"
                                                                 d="M0 0h24v24H0z"
                                                                 fill="none"
+                                                                stroke="none"
                                                         />
                                                         <path
                                                                 d="M15 21v-5c0 -1.38 .62 -2 2 -2s2 .62 2 2v5m0 -3h-4"
                                                         />
-                                                        <path d="M19 10h-4l4 -7h-4" />
-                                                        <path d="M4 15l3 3l3 -3" />
-                                                        <path d="M7 6v12" />
+                                                        <path d="M19 10h-4l4 -7h-4"/>
+                                                        <path d="M4 15l3 3l3 -3"/>
+                                                        <path d="M7 6v12"/>
                                                     </g>
                                                 </svg>
                                             </button>
@@ -457,19 +467,19 @@
                                         <th>Quantität</th>
                                         <th>
                                             <button
-                                                    type="button"
-                                                    class="btn warenkorb__btn--tablehead"
                                                     aria-label="Stückpreis absteigend sortieren"
+                                                    class="btn warenkorb__btn--tablehead"
                                                     id="btn_Stueckpreis"
+                                                    type="button"
                                             >
                                                 <span>Stückpreis</span>
                                                 <svg
-                                                        class="table-sorting-icons"
                                                         aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
+                                                        class="table-sorting-icons"
                                                         height="24"
                                                         viewBox="0 0 24 24"
+                                                        width="24"
+                                                        xmlns="http://www.w3.org/2000/svg"
                                                 >
                                                     <g class="icon__filter" fill="#7a7a7a">
                                                         <path
@@ -478,66 +488,66 @@
                                                     </g>
                                                     <g
                                                             class="icon__sort-ascending"
-                                                            stroke-width="1.5"
-                                                            stroke="#1F1F1F"
                                                             fill="none"
+                                                            stroke="#1F1F1F"
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
+                                                            stroke-width="1.5"
                                                     >
                                                         <title>aufsteigend sortieren</title>
                                                         <path
-                                                                stroke="none"
                                                                 d="M0 0h24v24H0z"
                                                                 fill="none"
+                                                                stroke="none"
                                                         />
-                                                        <path d="M4 15l3 3l3 -3" />
-                                                        <path d="M7 6v12" />
+                                                        <path d="M4 15l3 3l3 -3"/>
+                                                        <path d="M7 6v12"/>
                                                         <path
                                                                 d="M17 3a2 2 0 0 1 2 2v3a2 2 0 1 1 -4 0v-3a2 2 0 0 1 2 -2z"
                                                         />
-                                                        <circle cx="17" cy="16" r="2" />
-                                                        <path d="M19 16v3a2 2 0 0 1 -2 2h-1.5" />
+                                                        <circle cx="17" cy="16" r="2"/>
+                                                        <path d="M19 16v3a2 2 0 0 1 -2 2h-1.5"/>
                                                     </g>
                                                     <g
                                                             class="icon__sort-descending"
-                                                            stroke-width="1.5"
-                                                            stroke="#1F1F1F"
                                                             fill="none"
+                                                            stroke="#1F1F1F"
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
+                                                            stroke-width="1.5"
                                                     >
                                                         <title>absteigend sortieren</title>
                                                         <path
-                                                                stroke="none"
                                                                 d="M0 0h24v24H0z"
                                                                 fill="none"
+                                                                stroke="none"
                                                         />
-                                                        <path d="M4 15l3 3l3 -3" />
-                                                        <path d="M7 6v12" />
+                                                        <path d="M4 15l3 3l3 -3"/>
+                                                        <path d="M7 6v12"/>
                                                         <path
                                                                 d="M17 14a2 2 0 0 1 2 2v3a2 2 0 1 1 -4 0v-3a2 2 0 0 1 2 -2z"
                                                         />
-                                                        <circle cx="17" cy="5" r="2" />
-                                                        <path d="M19 5v3a2 2 0 0 1 -2 2h-1.5" />
+                                                        <circle cx="17" cy="5" r="2"/>
+                                                        <path d="M19 5v3a2 2 0 0 1 -2 2h-1.5"/>
                                                     </g>
                                                 </svg>
                                             </button>
                                         </th>
                                         <th>
                                             <button
-                                                    type="button"
-                                                    class="btn warenkorb__btn--tablehead"
                                                     aria-label="Mengenpreis absteigend sortieren"
+                                                    class="btn warenkorb__btn--tablehead"
                                                     id="btn_Mengenpreis"
+                                                    type="button"
                                             >
                                                 <span>Mengenpreis</span>
                                                 <svg
-                                                        class="table-sorting-icons"
                                                         aria-hidden="true"
-                                                        xmlns="http://www.w3.org/2000/svg"
-                                                        width="24"
+                                                        class="table-sorting-icons"
                                                         height="24"
                                                         viewBox="0 0 24 24"
+                                                        width="24"
+                                                        xmlns="http://www.w3.org/2000/svg"
                                                 >
                                                     <g class="icon__filter" fill="#7a7a7a">
                                                         <path
@@ -546,47 +556,47 @@
                                                     </g>
                                                     <g
                                                             class="icon__sort-ascending"
-                                                            stroke-width="1.5"
-                                                            stroke="#1F1F1F"
                                                             fill="none"
+                                                            stroke="#1F1F1F"
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
+                                                            stroke-width="1.5"
                                                     >
                                                         <title>aufsteigend sortieren</title>
                                                         <path
-                                                                stroke="none"
                                                                 d="M0 0h24v24H0z"
                                                                 fill="none"
+                                                                stroke="none"
                                                         />
-                                                        <path d="M4 15l3 3l3 -3" />
-                                                        <path d="M7 6v12" />
+                                                        <path d="M4 15l3 3l3 -3"/>
+                                                        <path d="M7 6v12"/>
                                                         <path
                                                                 d="M17 3a2 2 0 0 1 2 2v3a2 2 0 1 1 -4 0v-3a2 2 0 0 1 2 -2z"
                                                         />
-                                                        <circle cx="17" cy="16" r="2" />
-                                                        <path d="M19 16v3a2 2 0 0 1 -2 2h-1.5" />
+                                                        <circle cx="17" cy="16" r="2"/>
+                                                        <path d="M19 16v3a2 2 0 0 1 -2 2h-1.5"/>
                                                     </g>
                                                     <g
                                                             class="icon__sort-descending"
-                                                            stroke-width="1.5"
-                                                            stroke="#1F1F1F"
                                                             fill="none"
+                                                            stroke="#1F1F1F"
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
+                                                            stroke-width="1.5"
                                                     >
                                                         <title>absteigend sortieren</title>
                                                         <path
-                                                                stroke="none"
                                                                 d="M0 0h24v24H0z"
                                                                 fill="none"
+                                                                stroke="none"
                                                         />
-                                                        <path d="M4 15l3 3l3 -3" />
-                                                        <path d="M7 6v12" />
+                                                        <path d="M4 15l3 3l3 -3"/>
+                                                        <path d="M7 6v12"/>
                                                         <path
                                                                 d="M17 14a2 2 0 0 1 2 2v3a2 2 0 1 1 -4 0v-3a2 2 0 0 1 2 -2z"
                                                         />
-                                                        <circle cx="17" cy="5" r="2" />
-                                                        <path d="M19 5v3a2 2 0 0 1 -2 2h-1.5" />
+                                                        <circle cx="17" cy="5" r="2"/>
+                                                        <path d="M19 5v3a2 2 0 0 1 -2 2h-1.5"/>
                                                     </g>
                                                 </svg>
                                             </button>
@@ -597,68 +607,70 @@
                                 </table>
                                 <div class="table-controls">
                                     <button
-                                            type="button"
-                                            id="tableClearBtn"
-                                            class="btn btn--small btn--clear"
                                             aria-label="Warenkorb leeren"
+                                            class="btn btn--small btn--clear"
+                                            id="tableClearBtn"
+                                            type="button"
                                     >
                                         <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="22"
+                                                aria-hidden="true"
                                                 height="22"
                                                 viewBox="0 0 24 24"
-                                                aria-hidden="true"
+                                                width="22"
+                                                xmlns="http://www.w3.org/2000/svg"
                                         >
                                             <g
-                                                    stroke-width="1.5"
-                                                    stroke="#d11111"
                                                     fill="none"
+                                                    stroke="#d11111"
                                                     stroke-linecap="round"
                                                     stroke-linejoin="round"
+                                                    stroke-width="1.5"
                                             >
-                                                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                                <line x1="4" y1="7" x2="20" y2="7" />
-                                                <line x1="10" y1="11" x2="10" y2="17" />
-                                                <line x1="14" y1="11" x2="14" y2="17" />
+                                                <path d="M0 0h24v24H0z" fill="none" stroke="none"/>
+                                                <line x1="4" x2="20" y1="7" y2="7"/>
+                                                <line x1="10" x2="10" y1="11" y2="17"/>
+                                                <line x1="14" x2="14" y1="11" y2="17"/>
                                                 <path
                                                         d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12"
                                                 />
-                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
-                                            </g></svg
-                                        ><span>leeren</span>
+                                                <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3"/>
+                                            </g>
+                                        </svg
+                                        >
+                                        <span>leeren</span>
                                     </button>
                                     <button
-                                            type="button"
-                                            data-trigger="stage2"
                                             class="btn btn--big btn--buy"
+                                            data-trigger="stage2"
+                                            type="button"
                                     >
                                         <svg
-                                                xmlns="http://www.w3.org/2000/svg"
-                                                width="24"
-                                                height="24"
-                                                viewBox="0 0 24 24"
-                                                stroke-width="2"
-                                                stroke="#6c5434"
                                                 fill="none"
+                                                height="24"
+                                                stroke="#6c5434"
                                                 stroke-linecap="round"
                                                 stroke-linejoin="round"
+                                                stroke-width="2"
+                                                viewBox="0 0 24 24"
+                                                width="24"
+                                                xmlns="http://www.w3.org/2000/svg"
                                         >
-                                            <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                                            <circle cx="6" cy="19" r="2" />
-                                            <circle cx="17" cy="19" r="2" />
-                                            <path d="M17 17h-11v-14h-2" />
-                                            <path d="M6 5l14 1l-1 7h-13" />
+                                            <path d="M0 0h24v24H0z" fill="none" stroke="none"/>
+                                            <circle cx="6" cy="19" r="2"/>
+                                            <circle cx="17" cy="19" r="2"/>
+                                            <path d="M17 17h-11v-14h-2"/>
+                                            <path d="M6 5l14 1l-1 7h-13"/>
                                         </svg>
                                         <span>Kaufabwicklung</span>
                                     </button>
                                 </div>
                             </div>
                         </div>
-                        <div class="stage-2" aria-hidden="true">
+                        <div aria-hidden="true" class="stage-2">
                             <table
+                                    aria-label="Bestellübersicht"
                                     class="table"
                                     id="bestelluebersicht"
-                                    aria-label="Bestellübersicht"
                             >
                                 <caption class="visually-hidden">
                                     Auflistung aller zu bestellender Produkte.
@@ -678,18 +690,18 @@
                                 <div class="coupon__border">
                                     <div class="coupon-header">
                                         <p>Besitzen Sie einen Gutschein Code?</p>
-                                        <span id="coupon-status" aria-hidden="true" hidden></span>
+                                        <span aria-hidden="true" hidden id="coupon-status"></span>
                                     </div>
-                                    <form method="POST" class="coupon" id="coupon-form">
+                                    <form class="coupon" id="coupon-form" method="POST">
                                         <legend class="visually-hidden">
                                             <h3>Gutscheinverwertung</h3>
                                         </legend>
                                         <label for="coupon-input">Gutschein Code einlösen</label>
                                         <input
-                                                type="search"
-                                                name="coupon"
                                                 id="coupon-input"
+                                                name="coupon"
                                                 placeholder="Code eingeben..."
+                                                type="search"
                                         />
                                         <button class="btn btn--small">prüfen</button>
                                     </form>
@@ -697,27 +709,27 @@
                             </div>
                             <div class="table-controls">
                                 <button
-                                        type="button"
-                                        data-trigger="stage1"
-                                        class="btn btn--small"
                                         aria-label="zum vorherigen Bestellschritt"
+                                        class="btn btn--small"
+                                        data-trigger="stage1"
+                                        type="button"
                                 >
                                     zurück
                                 </button>
                                 <button
-                                        type="button"
-                                        data-trigger="stage3"
                                         class="btn btn--big btn--buy"
+                                        data-trigger="stage3"
+                                        type="button"
                                 >
                                     Bestellübersicht
                                 </button>
                             </div>
                         </div>
-                        <div class="stage-3" aria-hidden="true">
+                        <div aria-hidden="true" class="stage-3">
                             <table
+                                    aria-label="Bestellzusammenfassung"
                                     class="table"
                                     id="bestellzusammenfassung"
-                                    aria-label="Bestellzusammenfassung"
                             >
                                 <caption class="visually-hidden">
                                     Auflistung aller zu zahlender Kosten.
@@ -733,18 +745,18 @@
                             </table>
                             <div class="table-controls">
                                 <button
-                                        type="button"
-                                        data-trigger="stage2"
-                                        class="btn btn--small"
                                         aria-label="zum vorherigen Bestellschritt"
+                                        class="btn btn--small"
+                                        data-trigger="stage2"
+                                        type="button"
                                 >
                                     zurück
                                 </button>
                                 <button
+                                        class="btn btn--big btn--buy"
+                                        data-trigger="stage1"
                                         id="finishOrderBtn"
                                         type="button"
-                                        data-trigger="stage1"
-                                        class="btn btn--big btn--buy"
                                 >
                                     verbindlich bestellen
                                 </button>
@@ -760,11 +772,11 @@
                     <div class="circle__back"></div>
                     <div class="circle__front">
                         <svg
-                                xmlns="http://www.w3.org/2000/svg"
-                                width="1em"
+                                fill="none"
                                 height="1em"
                                 viewBox="0 0 52 60"
-                                fill="none"
+                                width="1em"
+                                xmlns="http://www.w3.org/2000/svg"
                         >
                             <g>
                                 <path
@@ -778,42 +790,42 @@
                 <p>Die Bestellung wird versendet.</p>
             </div>
         </div>
-        </div>
+    </div>
     <div hidden="hidden" id="main-content2">
         <div class="container filter">
         </div>
         <div class="container orders-table">
         </div>
     </div>
-    <div hidden="hidden" id="main-content3" class="playground">
+    <div class="playground" hidden="hidden" id="main-content3">
         <div class="container">
             <div class="form-grid">
-                    <form>
-                        <fieldset>
-                            <legend><h2>Factorial</h2></legend>
-                            <div class="form__group">
-                                <div class="form__input">
-                                    <label for="factorial_input">Input</label>
-                                    <input
-                                            type="number"
-                                            step="1"
-                                            class="no-counter-control"
-                                            id="factorial_input"
-                                            required
-                                    />
-                                </div>
-                                <div class="form__input">
-                                    <label for="factorial_result">Result</label>
-                                    <output id="factorial_result"></output>
-                                </div>
+                <form>
+                    <fieldset>
+                        <legend><h2>Factorial</h2></legend>
+                        <div class="form__group">
+                            <div class="form__input">
+                                <label for="factorial_input">Input</label>
+                                <input
+                                        class="no-counter-control"
+                                        id="factorial_input"
+                                        required
+                                        step="1"
+                                        type="number"
+                                />
                             </div>
-                            <div class="form__btn-group">
-                                <button type="button" id="factorial_calc" class="btn">
-                                    Calculate
-                                </button>
+                            <div class="form__input">
+                                <label for="factorial_result">Result</label>
+                                <output id="factorial_result"></output>
                             </div>
-                        </fieldset>
-                    </form>
+                        </div>
+                        <div class="form__btn-group">
+                            <button class="btn" id="factorial_calc" type="button">
+                                Calculate
+                            </button>
+                        </div>
+                    </fieldset>
+                </form>
                 <form>
                     <fieldset>
                         <legend><h2>Fibonacci</h2></legend>
@@ -821,11 +833,11 @@
                             <div class="form__input">
                                 <label for="fibonacci_input">Input</label>
                                 <input
-                                        type="number"
-                                        step="1"
                                         class="no-counter-control"
                                         id="fibonacci_input"
                                         required
+                                        step="1"
+                                        type="number"
                                 />
                             </div>
                             <div class="form__input">
@@ -834,7 +846,7 @@
                             </div>
                         </div>
                         <div class="form__btn-group">
-                            <button type="button" id="fibonacci_calc" class="btn">
+                            <button class="btn" id="fibonacci_calc" type="button">
                                 Calculate
                             </button>
                         </div>
@@ -847,10 +859,10 @@
                             <div class="form__input">
                                 <label for="count_vowel_input">Input</label>
                                 <input
-                                        type="text"
                                         class="no-counter-control"
                                         id="count_vowel_input"
-                                        required/>
+                                        required
+                                        type="text"/>
                             </div>
                             <div class="form__input">
                                 <label for="count_vowel_result">Result</label>
@@ -858,7 +870,7 @@
                             </div>
                         </div>
                         <div class="form__btn-group">
-                            <button type="button" id="count_vowel_calc" class="btn">
+                            <button class="btn" id="count_vowel_calc" type="button">
                                 Calculate
                             </button>
                         </div>
@@ -871,26 +883,26 @@
                             <div class="form__input">
                                 <label for="find_primes_input">Input</label>
                                 <input
-                                        type="number"
-                                        step="1"
                                         class="no-counter-control"
                                         id="find_primes_input"
                                         required
+                                        step="1"
+                                        type="number"
                                 />
                             </div>
                             <div class="form__input">
                                 <label for="find_primes_result">Result</label>
-                                <output style="width: 90%; overflow: auto;" id="find_primes_result"></output>
+                                <output id="find_primes_result" style="width: 90%; overflow: auto;"></output>
                             </div>
                         </div>
                         <div class="form__btn-group">
-                            <button type="button" id="find_primes_calc" class="btn">
+                            <button class="btn" id="find_primes_calc" type="button">
                                 Calculate
                             </button>
                         </div>
                     </fieldset>
                 </form>
-                </div>
+            </div>
         </div>
     </div>
 </main>

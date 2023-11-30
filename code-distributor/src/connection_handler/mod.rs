@@ -23,7 +23,7 @@ pub(crate) async fn initialize(app_context: Arc<Mutex<ApplicationContext>>) {
 
     let cors = warp::cors()
         .allow_any_origin()
-        .allow_headers(vec!["User-Agent", "Content-Type", "Authorization"])
+        .allow_headers(vec!["User-Agent", "Content-Type", "X-Authorization"])
         .allow_methods(vec![
             "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD",
         ]);
@@ -85,12 +85,12 @@ async fn handle_client_connection(
 
     if let Some(client) = client_opt {
         let tx = Arc::new(Mutex::new(tx));
-        let client = Arc::new(Mutex::new(client));
         client_registry
             .lock()
             .await
-            .handle_connection(client.lock().await.uuid)
+            .handle_connection(client.uuid, tx.clone())
             .await;
+        let client = Arc::new(Mutex::new(client));
         let mut client_event_listener = ClientEventListener::new(client.clone(), rx, tx);
         client_event_listener.handle_events().await;
         client_registry

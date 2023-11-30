@@ -26,17 +26,17 @@ export default class CodeDistributionManager {
             auth = await fetch(this.configuration.codeDistributorApiUrl + 'auth', {
                 method: 'POST',
                 headers: {
-                    'Authorization': 'Bearer ' + storedAuth.token,
+                    'X-Authorization': 'Bearer ' + storedAuth.token,
                 }
             });
             auth = await auth.json();
+            localStorage.setItem('auth', JSON.stringify(auth));
         }
 
         await this.webSocketClient.init(auth);
         this.fragmentExecutor = new FragmentExecutor(this.fragmentRegistry, this.configuration);
         await this.fragmentExecutor.init();
-        let dss = new DecisionSystemSimulator(this.configuration, auth, this.fragmentRegistry);
-        await dss.init();
+        new DecisionSystemSimulator(this.configuration, auth, this.fragmentRegistry);
     }
 
     async updateFragmentRegistry(fragmentId, executionLocation) {

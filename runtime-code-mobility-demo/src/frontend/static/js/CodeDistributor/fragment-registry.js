@@ -3,12 +3,6 @@ export default class FragmentRegistry {
 
     constructor(configuration) {
         this.configuration = configuration;
-        window.addEventListener('beforeunload', () => {
-            localStorage.setItem('fragmentRegistry', JSON.stringify(Array.from(this.fragmentMap, ([key, value]) => ({
-                ['id']: key,
-                ['execution_location']: value
-            }))));
-        });
     }
 
     async init() {
