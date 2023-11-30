@@ -47,7 +47,7 @@ pub(crate) async fn update_client(
 ) -> Result<impl Reply, Rejection> {
     let client_registry = app_context.lock().await.client_registry.clone();
     let client_registry = client_registry.lock().await;
-    info!("Updating client information for client: {}", id);
+    info!("Updating fragment information for client: {}", id);
     client_registry
         .update_client_fragments(id, update_fragment_data)
         .await

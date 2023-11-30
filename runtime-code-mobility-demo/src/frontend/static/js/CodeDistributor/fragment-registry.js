@@ -1,3 +1,5 @@
+import internal_event, {INTERNAL_EVENT_TYPES} from "./internal-events.js";
+
 export default class FragmentRegistry {
     fragmentMap = new Map();
 
@@ -7,6 +9,14 @@ export default class FragmentRegistry {
 
     async init() {
         await this.fetchFragments();
+        internal_event.addEventListener(INTERNAL_EVENT_TYPES.UPDATE_FRAGMENTS, (event) => {
+            event.detail.data.forEach((fragment) => {
+                if (this.fragmentMap.has(fragment.id)) {
+                    console.log(`Updating fragment ${fragment.id} to ${fragment.execution_location}`);
+                    this.fragmentMap.set(fragment.id, fragment.execution_location);
+                }
+            });
+        });
     }
 
     async fetchFragments() {

@@ -14,7 +14,6 @@ export default class CodeDistributionManager {
 
     async init() {
         await this.fragmentRegistry.init();
-
         let storedAuth = localStorage.getItem('auth');
         let auth;
         if (storedAuth === null) {

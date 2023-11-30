@@ -11,6 +11,9 @@ use std::io::Write;
 pub struct Configuration {
     pub app_host: Option<String>,
     pub app_port: Option<u16>,
+
+    pub code_distributor_api_url: String,
+    pub code_distributor_ws_url: String,
 }
 
 impl Default for Configuration {
@@ -37,6 +40,21 @@ impl Configuration {
                 )
             })
             .init();
+    }
+}
+
+#[derive(Debug, Default, Serialize)]
+pub struct CodeDistributorConfiguration {
+    pub code_distributor_api_url: String,
+    pub code_distributor_ws_url: String,
+}
+
+impl From<Configuration> for CodeDistributorConfiguration {
+    fn from(config: Configuration) -> Self {
+        Self {
+            code_distributor_api_url: config.code_distributor_api_url,
+            code_distributor_ws_url: config.code_distributor_ws_url,
+        }
     }
 }
 
