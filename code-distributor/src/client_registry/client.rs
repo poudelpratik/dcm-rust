@@ -1,20 +1,22 @@
-use crate::client_registry::client_event_listener::UpdateFragmentData;
-use crate::connection_handler::message::{Events, Message};
-use crate::fragment_registry::FragmentRegistry;
-use crate::util::error::ApplicationError;
+use std::sync::Arc;
+
 use futures_util::stream::SplitSink;
 use futures_util::SinkExt;
 use log::info;
 use serde::Serialize;
-use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
 use warp::ws::{Message as WsMessage, WebSocket};
 
+use crate::client_registry::client_event_listener::UpdateFragmentData;
+use crate::connection_handler::message::{Events, Message};
+use crate::fragment_registry::FragmentRegistry;
+use crate::util::error::ApplicationError;
+
 #[derive(Debug, Clone)]
 pub(crate) struct Client {
     pub(crate) uuid: Uuid,
-    pub(crate) fragment_registry: Arc<Mutex<FragmentRegistry>>,
+    pub(crate) fragment_registry: FragmentRegistry,
     pub(crate) auth_token: String,
     pub(crate) connected: bool,
     pub(crate) tx: Option<Arc<Mutex<SplitSink<WebSocket, WsMessage>>>>,
@@ -23,7 +25,7 @@ pub(crate) struct Client {
 impl Client {
     pub(crate) fn new(
         uuid: Uuid,
-        fragment_registry: Arc<Mutex<FragmentRegistry>>,
+        fragment_registry: FragmentRegistry,
         auth_token: String,
         tx: Option<Arc<Mutex<SplitSink<WebSocket, WsMessage>>>>,
     ) -> Self {
@@ -41,8 +43,6 @@ impl Client {
         update_fragments_data: Vec<UpdateFragmentData>,
     ) -> Result<(), ApplicationError> {
         self.fragment_registry
-            .lock()
-            .await
             .update_fragments(&update_fragments_data)
             .ok();
         self.send_message(update_fragments_data, Events::UpdateFragments)
@@ -50,14 +50,12 @@ impl Client {
         Ok(())
     }
 
-    pub async fn on_connection(&mut self, tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>) {
+    pub async fn connected(&mut self, tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>) {
         self.connected = true;
         info!("Client connected: {:?}", &self.uuid);
         self.tx = Some(tx);
         let update_fragments: Vec<UpdateFragmentData> = self
             .fragment_registry
-            .lock()
-            .await
             .fragments
             .clone()
             .into_iter()
@@ -69,6 +67,11 @@ impl Client {
         self.send_message(update_fragments, Events::UpdateFragments)
             .await
             .ok();
+    }
+
+    pub fn disconnected(&mut self) {
+        self.connected = false;
+        info!("Client connected: {:?}", &self.uuid);
     }
 
     async fn send_message<T>(&mut self, data: T, event: Events) -> Result<(), ApplicationError>
@@ -92,13 +95,15 @@ impl Client {
 pub(crate) struct ClientDto {
     pub(crate) uuid: Uuid,
     pub(crate) fragment_registry: FragmentRegistry,
+    pub(crate) connected: bool,
 }
 
-impl ClientDto {
-    pub fn new(uuid: Uuid, fragment_registry: FragmentRegistry) -> Self {
+impl From<Client> for ClientDto {
+    fn from(client: Client) -> Self {
         Self {
-            uuid,
-            fragment_registry,
+            uuid: client.uuid,
+            fragment_registry: client.fragment_registry,
+            connected: client.connected,
         }
     }
 }

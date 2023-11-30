@@ -8,7 +8,7 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 use warp::{Rejection, Reply};
 
-use crate::client_registry::client::Client;
+use crate::client_registry::client::{Client, ClientDto};
 use crate::client_registry::client_event_listener::UpdateFragmentData;
 use crate::client_registry::ClientRegistry;
 use crate::connection_handler::jwt::Claims;
@@ -17,13 +17,12 @@ use crate::fragment_registry::FragmentRegistry;
 use crate::AppData;
 
 /// This function returns a list of all the clients connected to the server.
-pub(crate) async fn get_clients(
+pub(crate) async fn get_all_clients(
     client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = client_registry.clone();
-    let client_registry = client_registry.lock().await;
+    let clients = client_registry.lock().await.get_all_clients().await;
     info!("Getting all clients");
-    let clients = client_registry.get_clients().await;
+    let clients: Vec<ClientDto> = clients.into_iter().map(|c| ClientDto::from(c)).collect();
     Ok(warp::reply::json(&clients))
 }
 
@@ -32,11 +31,14 @@ pub(crate) async fn get_client(
     id: Uuid,
     client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = client_registry.clone();
-    let client_registry = client_registry.lock().await;
     info!("Getting client information of client: {}", id);
-    let clients = client_registry.get_client_by_id(id).await;
-    Ok(warp::reply::json(&clients))
+    let client = client_registry.lock().await.get_client_ref_by_id(id).await;
+    if let Some(client) = client {
+        let client = client.lock().await;
+        Ok(warp::reply::json(&ClientDto::from(client.clone())))
+    } else {
+        Err(warp::reject::custom(WarpError))
+    }
 }
 
 /// This function updates a client by its id.
@@ -45,13 +47,12 @@ pub(crate) async fn update_client(
     update_fragment_data: Vec<UpdateFragmentData>,
     client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = client_registry.clone();
-    let client_registry = client_registry.lock().await;
+    let client = client_registry.lock().await.get_client_ref_by_id(id).await;
+    if let Some(client) = client {
+        let mut client = client.lock().await;
+        client.update_fragments(update_fragment_data).await.ok();
+    }
     info!("Updating fragment information for client: {}", id);
-    client_registry
-        .update_client_fragments(id, update_fragment_data)
-        .await
-        .ok();
     Ok(warp::reply::json(&()))
 }
 
@@ -83,11 +84,10 @@ pub(crate) async fn authenticate(
             };
 
             let client_id = token_data.claims.uuid;
-            // let client_registry = client_registry.lock().await;
             if client_registry
                 .lock()
                 .await
-                .get_client_by_id(Uuid::parse_str(client_id.as_str()).unwrap_or_default())
+                .get_client_ref_by_id(Uuid::parse_str(client_id.as_str()).unwrap_or_default())
                 .await
                 .is_some()
             {
@@ -139,16 +139,13 @@ async fn create_client(
         &EncodingKey::from_secret(jwt_key.as_ref()),
     )
     .unwrap_or_default();
-
-    let fragment_registry = Arc::new(Mutex::new(fragment_registry));
-    let mut client_registry = client_registry.lock().await;
     let client = Arc::new(Mutex::new(Client::new(
         uuid,
         fragment_registry,
         auth_token.clone(),
         None,
     )));
-    client_registry.register(uuid, client);
+    client_registry.lock().await.register(uuid, client);
     (uuid, auth_token)
 }
 

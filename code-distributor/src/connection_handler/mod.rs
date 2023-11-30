@@ -85,26 +85,17 @@ async fn handle_client_connection(
     let client_opt = client_registry
         .lock()
         .await
-        .get_client_by_token(auth_token)
+        .get_client_ref_by_token(auth_token)
         .await;
 
     if let Some(client) = client_opt {
         let tx = Arc::new(Mutex::new(tx));
-        client_registry
-            .lock()
-            .await
-            .handle_connection(client.uuid, tx.clone())
-            .await;
-        let client = Arc::new(Mutex::new(client));
-        let mut client_event_listener = ClientEventListener::new(client.clone(), rx, tx);
+        client.lock().await.connected(tx.clone()).await;
+        let mut client_event_listener = ClientEventListener::new(rx, tx);
         client_event_listener.handle_events().await;
-        client_registry
-            .lock()
-            .await
-            .handle_disconnection(client.lock().await.uuid)
-            .await;
+        client.lock().await.disconnected();
     } else {
-        let _ = tx.send(Message::close()).await;
+        tx.send(Message::close()).await.ok();
     }
 }
 

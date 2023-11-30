@@ -1,31 +1,30 @@
-use crate::client_registry::client::Client;
-use crate::connection_handler::message::{Events, Message};
-use crate::fragment_executor::wasmer_runtime::WasmerRuntime;
-use crate::fragment_executor::FragmentExecutor;
-use crate::fragment_registry::fragment::ExecutionLocation;
+use std::sync::Arc;
+
 use futures_util::stream::{SplitSink, SplitStream};
 use futures_util::SinkExt;
 use futures_util::StreamExt;
 use serde_derive::{Deserialize, Serialize};
 use serde_json::Value;
-use std::sync::Arc;
 use tokio::sync::Mutex;
 use warp::ws::{Message as WsMessage, WebSocket};
 
+use crate::connection_handler::message::{Events, Message};
+use crate::fragment_executor::wasmer_runtime::WasmerRuntime;
+use crate::fragment_executor::FragmentExecutor;
+use crate::fragment_registry::fragment::ExecutionLocation;
+
 #[derive(Debug)]
 pub(crate) struct ClientEventListener {
-    pub(crate) client: Arc<Mutex<Client>>,
     pub rx: SplitStream<WebSocket>,
     pub tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
 }
 
 impl ClientEventListener {
     pub(crate) fn new(
-        client: Arc<Mutex<Client>>,
         rx: SplitStream<WebSocket>,
         tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
     ) -> Self {
-        Self { client, rx, tx }
+        Self { rx, tx }
     }
 
     /// When a client connects, this function is called to listen to events and handle accordingly.

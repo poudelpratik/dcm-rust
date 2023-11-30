@@ -23,7 +23,7 @@ pub(crate) fn create_routes(
         .and(warp::path("clients"))
         .and(warp::get())
         .and(client_registry.clone())
-        .and_then(endpoints::get_clients);
+        .and_then(endpoints::get_all_clients);
 
     let get_client = base_path
         .clone()
