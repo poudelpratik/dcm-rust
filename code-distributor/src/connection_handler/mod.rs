@@ -8,14 +8,18 @@ use warp::ws::{Message, WebSocket};
 use warp::{ws, Filter};
 
 use crate::client_registry::client_event_listener::ClientEventListener;
-use crate::ApplicationContext;
+use crate::client_registry::ClientRegistry;
+use crate::AppData;
 
 pub mod message;
 
 pub mod jwt;
 
-pub(crate) async fn initialize(app_context: Arc<Mutex<ApplicationContext>>) {
-    let config = app_context.lock().await.config.clone();
+pub(crate) async fn initialize(
+    app_data: Arc<AppData>,
+    client_registry: Arc<Mutex<ClientRegistry>>,
+) {
+    let config = app_data.config.clone();
     let host_addr = config.app_host.clone().unwrap_or("0.0.0.0".to_string());
     let server_port = config.app_port.unwrap_or(3030);
     let ws_path = "ws".to_string();
@@ -28,20 +32,22 @@ pub(crate) async fn initialize(app_context: Arc<Mutex<ApplicationContext>>) {
             "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD",
         ]);
 
-    let http_routes = crate::api::create_routes(app_context.clone(), api_path);
-    let context = warp::any().map(move || app_context.clone()).boxed();
+    let app_data = warp::any().map(move || app_data.clone()).boxed();
+    let client_registry = warp::any().map(move || client_registry.clone()).boxed();
+    let http_routes =
+        crate::api::create_routes(app_data.clone(), client_registry.clone(), api_path);
 
     let ws_routes = warp::path(ws_path)
-        .and(context)
+        .and(client_registry)
         .and(warp::query::<HashMap<String, String>>()) // Add this to extract query parameters
         .and(warp::ws())
         .and_then(
-            move |application_context, query_params: HashMap<String, String>, ws: ws::Ws| async move {
+            move |client_registry, query_params: HashMap<String, String>, ws: ws::Ws| async move {
                 match query_params.get("auth_token") {
                     Some(auth_token) => {
                         let auth_token = auth_token.to_string();
                         Ok(ws.on_upgrade(move |socket| {
-                            handle_client_connection(socket, application_context, auth_token.clone())
+                            handle_client_connection(socket, client_registry, auth_token.clone())
                         }))
                     }
                     None => Err(warp::reject::custom(WarpError)),
@@ -72,11 +78,10 @@ async fn handle_rejection(err: warp::Rejection) -> Result<impl warp::Reply, warp
 
 async fn handle_client_connection(
     ws: WebSocket,
-    app_context: Arc<Mutex<ApplicationContext>>,
+    client_registry: Arc<Mutex<ClientRegistry>>,
     auth_token: String,
 ) {
     let (mut tx, rx) = ws.split();
-    let client_registry = { app_context.lock().await.client_registry.clone() };
     let client_opt = client_registry
         .lock()
         .await

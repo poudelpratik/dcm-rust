@@ -37,17 +37,15 @@ pub async fn init(config: Configuration) {
     let client_registry = Arc::new(Mutex::new(ClientRegistry::new()));
 
     // Initialize the ApplicationContext
-    let app_context = Arc::new(Mutex::new(ApplicationContext {
+    let app_data = Arc::new(AppData {
         config: Arc::new(config),
-        client_registry,
         fragment_registry,
-    }));
+    });
 
-    connection_handler::initialize(app_context.clone()).await;
+    connection_handler::initialize(app_data.clone(), client_registry).await;
 }
 
-pub(crate) struct ApplicationContext {
+pub(crate) struct AppData {
     pub config: Arc<Configuration>,
-    pub client_registry: Arc<Mutex<ClientRegistry>>,
     pub fragment_registry: FragmentRegistry,
 }

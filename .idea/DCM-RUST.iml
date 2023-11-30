@@ -5,10 +5,12 @@
       <sourceFolder url="file://$MODULE_DIR$/code-distributor/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/runtime-code-mobility-demo/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/wasm-generator/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/decision-system-simulator/src" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/code-distributor/fragments" />
       <excludeFolder url="file://$MODULE_DIR$/code-distributor/target" />
       <excludeFolder url="file://$MODULE_DIR$/runtime-code-mobility-demo/target" />
       <excludeFolder url="file://$MODULE_DIR$/wasm-generator/target" />
+      <excludeFolder url="file://$MODULE_DIR$/decision-system-simulator/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

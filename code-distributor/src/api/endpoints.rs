@@ -14,13 +14,13 @@ use crate::client_registry::ClientRegistry;
 use crate::connection_handler::jwt::Claims;
 use crate::connection_handler::WarpError;
 use crate::fragment_registry::FragmentRegistry;
-use crate::ApplicationContext;
+use crate::AppData;
 
 /// This function returns a list of all the clients connected to the server.
 pub(crate) async fn get_clients(
-    app_context: Arc<Mutex<ApplicationContext>>,
+    client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = app_context.lock().await.client_registry.clone();
+    let client_registry = client_registry.clone();
     let client_registry = client_registry.lock().await;
     info!("Getting all clients");
     let clients = client_registry.get_clients().await;
@@ -30,9 +30,9 @@ pub(crate) async fn get_clients(
 /// This function gets a client by its id.
 pub(crate) async fn get_client(
     id: Uuid,
-    app_context: Arc<Mutex<ApplicationContext>>,
+    client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = app_context.lock().await.client_registry.clone();
+    let client_registry = client_registry.clone();
     let client_registry = client_registry.lock().await;
     info!("Getting client information of client: {}", id);
     let clients = client_registry.get_client_by_id(id).await;
@@ -43,9 +43,9 @@ pub(crate) async fn get_client(
 pub(crate) async fn update_client(
     id: Uuid,
     update_fragment_data: Vec<UpdateFragmentData>,
-    app_context: Arc<Mutex<ApplicationContext>>,
+    client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = app_context.lock().await.client_registry.clone();
+    let client_registry = client_registry.clone();
     let client_registry = client_registry.lock().await;
     info!("Updating fragment information for client: {}", id);
     client_registry
@@ -57,11 +57,12 @@ pub(crate) async fn update_client(
 
 /// For client authentication
 pub(crate) async fn authenticate(
-    headers: http::HeaderMap,
-    app_context: Arc<Mutex<ApplicationContext>>,
+    headers: HeaderMap,
+    app_context: Arc<AppData>,
+    client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    let client_registry = app_context.lock().await.client_registry.clone();
-    let fragment_registry = app_context.lock().await.fragment_registry.clone();
+    let client_registry = client_registry.clone();
+    let fragment_registry = app_context.fragment_registry.clone();
 
     let existing_token = headers
         .get("X-Authorization")
@@ -141,8 +142,12 @@ async fn create_client(
 
     let fragment_registry = Arc::new(Mutex::new(fragment_registry));
     let mut client_registry = client_registry.lock().await;
-    let client = Client::new(uuid, fragment_registry, auth_token.clone(), None);
-    let client = Arc::new(Mutex::new(client));
+    let client = Arc::new(Mutex::new(Client::new(
+        uuid,
+        fragment_registry,
+        auth_token.clone(),
+        None,
+    )));
     client_registry.register(uuid, client);
     (uuid, auth_token)
 }
