@@ -40,5 +40,17 @@ pub(crate) fn create_routes(
         .and(context.clone())
         .and_then(endpoints::update_client);
 
-    get_client.or(update_client).or(get_clients).boxed()
+    let authenticate = base_path
+        .clone()
+        .and(warp::path("auth"))
+        .and(warp::post()) // Use POST method
+        .and(context.clone())
+        .and(warp::header::headers_cloned())
+        .and_then(endpoints::authenticate);
+
+    get_client
+        .or(update_client)
+        .or(get_clients)
+        .or(authenticate)
+        .boxed()
 }

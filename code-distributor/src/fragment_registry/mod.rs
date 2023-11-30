@@ -23,7 +23,7 @@ impl FragmentRegistry {
             if let Some(index) = self
                 .fragments
                 .iter()
-                .position(|f| f.id == update_fragment_data.fragment_id)
+                .position(|f| f.id == update_fragment_data.id)
             {
                 self.fragments[index].execution_location =
                     update_fragment_data.execution_location.clone();

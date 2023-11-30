@@ -23,4 +23,6 @@ byteorder = "1.4.3"
 thiserror = "1.0.48"
 async-trait = "0.1.73"
 figment = { version = "0.10.10", features = ["toml", "env"] }
-#fp-bindgen = "3.0.0"
+jsonwebtoken = "9.1.0"
+headers = { version = "0.3.9", features = [] }
+http = "0.2.9"

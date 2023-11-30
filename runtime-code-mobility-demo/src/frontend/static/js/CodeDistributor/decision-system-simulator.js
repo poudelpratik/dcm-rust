@@ -1,14 +1,25 @@
 import {EXECUTION_LOCATION} from "./constants.js";
 
-export default class ExecutionLocationSelector {
-    cdm = null;
+export default class DecisionSystemSimulator {
     popupBox = null; // This will hold the popup box element
 
-    constructor(cdm) {
-        this.cdm = cdm;
+    constructor(configuration, auth, fragmentRegistry) {
+        this.fragmentRegistry = fragmentRegistry;
+        this.configuration = configuration;
+        this.auth = auth;
         this.createPopupUI(); // Call the function to create the UI when the class is instantiated
         this.populateFunctionSelect(); // Populate the select dropdown
         document.querySelector('#selectExecutionLocation').addEventListener('click', () => this.showPopup());
+    }
+
+    async init() {
+        let storedRegistry = localStorage.getItem('fragmentRegistry');
+        if (storedRegistry !== null) {
+            await fetch(this.configuration.codeDistributorApiUrl + 'clients/' + this.auth.client_id, {
+                method: 'PUT',
+                body: storedRegistry
+            });
+        }
     }
 
     // Method to create the popup UI and append it to the document body
@@ -98,7 +109,10 @@ export default class ExecutionLocationSelector {
     async executionLocationUpdated() {
         const executionLocation = document.getElementById('executionLocation').checked ? 'Server' : 'Client';
         const selectedFuncId = document.getElementById('fragmentSelect').value;
-        await this.cdm.updateFragmentRegistry(selectedFuncId, executionLocation);
+        await fetch(this.configuration.codeDistributorApiUrl + 'clients/' + this.auth.client_id, {
+            method: 'PUT',
+            body: JSON.stringify([{id: selectedFuncId, execution_location: executionLocation}])
+        });
     }
 
     // Method to populate the function selection dropdown
@@ -106,7 +120,7 @@ export default class ExecutionLocationSelector {
         const fragmentSelect = document.getElementById('fragmentSelect');
         // Clear existing options
         fragmentSelect.innerHTML = '';
-        this.cdm.fragmentRegistry.fragmentMap.forEach((value, key) => {
+        this.fragmentRegistry.fragmentMap.forEach((value, key) => {
             const option = document.createElement('option');
             option.value = key;
             option.textContent = key;
@@ -117,8 +131,8 @@ export default class ExecutionLocationSelector {
     fragmentSelected() {
         const functionSelect = document.getElementById('fragmentSelect');
         const selectedFragmentId = functionSelect.value;
-        const executionLocation = this.cdm.fragmentRegistry.fragmentMap.get(selectedFragmentId);
-        if(executionLocation == EXECUTION_LOCATION.SERVER) {
+        const executionLocation = this.fragmentRegistry.fragmentMap.get(selectedFragmentId);
+        if (executionLocation == EXECUTION_LOCATION.SERVER) {
             document.getElementById('executionLocation').checked = true;
         } else {
             document.getElementById('executionLocation').checked = false;

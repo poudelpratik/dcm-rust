@@ -25,11 +25,7 @@ impl ClientEventListener {
         rx: SplitStream<WebSocket>,
         tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
     ) -> Self {
-        Self {
-            client,
-            rx,
-            tx,
-        }
+        Self { client, rx, tx }
     }
 
     /// When a client connects, this function is called to listen to events and handle accordingly.
@@ -43,19 +39,12 @@ impl ClientEventListener {
                             serde_json::from_str(msg.to_str().unwrap()).unwrap_or_default();
                         let message =
                             serde_json::from_value::<Message<Value>>(raw_message.clone()).unwrap();
-                        match message.message_type {
-                            Events::ExecuteFunction => {
-                                log::info!("Received ExecuteFunction event");
-                                let tx = tx.clone();
-                                tokio::spawn(async move {
-                                    handle_execute_function_event(tx, message).await
-                                });
-                            }
-                            Events::UpdateFragments => {
-                                log::info!("Received UpdateFragments event");
-                                let tx = tx.clone();
-                                handle_update_fragments(tx, message, self.client.clone()).await;
-                            }
+                        if let Events::ExecuteFunction = message.message_type {
+                            log::info!("Received ExecuteFunction event");
+                            let tx = tx.clone();
+                            tokio::spawn(async move {
+                                handle_execute_function_event(tx, message).await
+                            });
                         }
                     }
                 }
@@ -63,45 +52,6 @@ impl ClientEventListener {
                     eprintln!("Error receiving message: {}", err);
                 }
             }
-        }
-    }
-}
-
-async fn handle_update_fragments(
-    tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
-    message: Message<Value>,
-    client: Arc<Mutex<Client>>,
-) {
-    match serde_json::from_value::<Vec<UpdateFragmentData>>(message.data) {
-        Ok(event_data) => {
-            // Handle the async operation separately
-            if client
-                .lock()
-                .await
-                .fragment_registry
-                .lock()
-                .await
-                .update_fragments(&event_data)
-                .is_ok()
-            {
-                let message = Message::new(
-                    message.message_id,
-                    Events::ExecuteFunction,
-                    "Fragment Registry updated.",
-                );
-                let json_string = serde_json::to_string(&message)
-                    .unwrap_or("Unable to serialize the data".to_string());
-                {
-                    tx.lock()
-                        .await
-                        .send(WsMessage::text(json_string))
-                        .await
-                        .ok();
-                }
-            }
-        }
-        Err(e) => {
-            log::error!("Failed to parse UpdateFragmentData: {:?}", e);
         }
     }
 }
@@ -146,6 +96,6 @@ pub(crate) struct ExecuteFunctionData {
 
 #[derive(Debug, Deserialize, Serialize, Clone)]
 pub(crate) struct UpdateFragmentData {
-    pub fragment_id: String,
+    pub id: String,
     pub execution_location: ExecutionLocation,
 }

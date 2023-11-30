@@ -5,7 +5,6 @@ use crate::util::error::ApplicationError;
 use futures_util::stream::SplitSink;
 use futures_util::SinkExt;
 use serde::Serialize;
-use serde_derive::Serialize;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 use uuid::Uuid;
@@ -15,23 +14,23 @@ use warp::ws::{Message as WsMessage, WebSocket};
 pub(crate) struct Client {
     pub(crate) uuid: Uuid,
     pub(crate) fragment_registry: Arc<Mutex<FragmentRegistry>>,
-    pub(crate) ip_address: String,
-    pub(crate) user_agent: String,
-    pub(crate) tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
+    pub(crate) auth_token: String,
+    pub(crate) connected: bool,
+    pub(crate) tx: Option<Arc<Mutex<SplitSink<WebSocket, WsMessage>>>>,
 }
 
 impl Client {
     pub(crate) fn new(
+        uuid: Uuid,
         fragment_registry: Arc<Mutex<FragmentRegistry>>,
-        ip_address: String,
-        user_agent: String,
-        tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
+        auth_token: String,
+        tx: Option<Arc<Mutex<SplitSink<WebSocket, WsMessage>>>>,
     ) -> Self {
         Self {
-            uuid: Uuid::new_v4(),
+            uuid,
             fragment_registry,
-            ip_address,
-            user_agent,
+            auth_token,
+            connected: false,
             tx,
         }
     }
@@ -57,6 +56,8 @@ impl Client {
         let message = Message::new(Uuid::new_v4().to_string(), event, data);
         let json_string = serde_json::to_string(&message).unwrap();
         self.tx
+            .clone()
+            .unwrap()
             .lock()
             .await
             .send(WsMessage::text(json_string))
@@ -69,22 +70,13 @@ impl Client {
 pub(crate) struct ClientDto {
     pub(crate) uuid: Uuid,
     pub(crate) fragment_registry: FragmentRegistry,
-    pub(crate) ip_address: String,
-    pub(crate) user_agent: String,
 }
 
 impl ClientDto {
-    pub fn new(
-        uuid: Uuid,
-        fragment_registry: FragmentRegistry,
-        ip_address: String,
-        user_agent: String,
-    ) -> Self {
+    pub fn new(uuid: Uuid, fragment_registry: FragmentRegistry) -> Self {
         Self {
             uuid,
             fragment_registry,
-            ip_address,
-            user_agent,
         }
     }
 }

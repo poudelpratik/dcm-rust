@@ -32,18 +32,14 @@ export default class WebSocketClient {
         this.#maxReconnectAttempts = config.maxReconnectAttempts;
     }
 
-    async init(fragmentRegistry) {
-        await this.establishConnection(fragmentRegistry);
+    async init(auth) {
+        this.auth = auth;
+        await this.establishConnection();
     }
 
-    async establishConnection(fragmentRegistry) {
-        let websocketUrl = window.location.hostname + ':'
-            + this.config.codeDistributorPort
-            + '/ws';
-        websocketUrl = window.location.protocol === 'https:' ? `wss://${websocketUrl}` : `ws://${websocketUrl}`;
-        this.socket = new WebSocket(websocketUrl);
-
-        this.socket.onopen = () => this.onOpen(fragmentRegistry);
+    async establishConnection() {
+        this.socket = new WebSocket(this.config.codeDistributorWsUrl + '?auth_token=' + this.auth.token);
+        this.socket.onopen = () => this.onOpen();
         this.socket.onmessage = (event) => this.onMessage(event);
         this.socket.onclose = () => {
             this.onClose();
@@ -65,7 +61,7 @@ export default class WebSocketClient {
         }
     }
 
-    onOpen(fragmentRegistry) {
+    onOpen() {
         this.#reconnectAttempts = 0;
         clearInterval(this.#globalReconnectIntervalTimer);
         const websocketStatus = selectElement('#websocketStatus');
@@ -79,11 +75,6 @@ export default class WebSocketClient {
             connectionIcon.classList.remove('trigger');
         }, 200);
         console.log('WebSocket Client Connected');
-
-        this.sendMessage(MESSAGE_TYPES.UPDATE_FRAGMENTS, Array.from(fragmentRegistry.fragmentMap, ([key, value]) => ({
-            ['fragment_id']: key,
-            ['execution_location']: value
-        })));
     }
 
     onClose() {
@@ -98,7 +89,7 @@ export default class WebSocketClient {
         if (this.socket.readyState === WebSocket.OPEN) {
             return new Promise((resolve, reject) => {
                 const message_id = uuidv4();
-                this.pendingRequests[message_id] = { resolve, reject };
+                this.pendingRequests[message_id] = {resolve, reject};
                 const message = {
                     message_id: message_id,
                     message_type: eventType,

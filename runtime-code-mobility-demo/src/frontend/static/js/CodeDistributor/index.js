@@ -1,7 +1,7 @@
 import WebSocketClient, {MESSAGE_TYPES} from "./websocketclient.js";
 import FragmentRegistry from "./fragment-registry.js";
 import FragmentExecutor from "./fragment-executor.js";
-import ExecutionLocationSelector from "./execution-location-selector.js";
+import DecisionSystemSimulator from "./decision-system-simulator.js";
 import {EXECUTION_LOCATION} from "./constants.js";
 
 export default class CodeDistributionManager {
@@ -14,10 +14,29 @@ export default class CodeDistributionManager {
 
     async init() {
         await this.fragmentRegistry.init();
-        await this.webSocketClient.init(this.fragmentRegistry);
+
+        let storedAuth = localStorage.getItem('auth');
+        let auth;
+        if (storedAuth === null) {
+            auth = await fetch(this.configuration.codeDistributorApiUrl + 'auth', {method: 'POST'});
+            auth = await auth.json();
+            localStorage.setItem('auth', JSON.stringify(auth));
+        } else {
+            storedAuth = JSON.parse(storedAuth);
+            auth = await fetch(this.configuration.codeDistributorApiUrl + 'auth', {
+                method: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + storedAuth.token,
+                }
+            });
+            auth = await auth.json();
+        }
+
+        await this.webSocketClient.init(auth);
         this.fragmentExecutor = new FragmentExecutor(this.fragmentRegistry, this.configuration);
         await this.fragmentExecutor.init();
-        new ExecutionLocationSelector(this);
+        let dss = new DecisionSystemSimulator(this.configuration, auth, this.fragmentRegistry);
+        await dss.init();
     }
 
     async updateFragmentRegistry(fragmentId, executionLocation) {

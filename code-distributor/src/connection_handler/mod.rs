@@ -1,14 +1,18 @@
-pub mod message;
+use std::collections::HashMap;
+use std::net::IpAddr;
+use std::sync::Arc;
 
-use crate::client_registry::client::Client;
+use futures_util::{SinkExt, StreamExt};
+use tokio::sync::Mutex;
+use warp::ws::{Message, WebSocket};
+use warp::{ws, Filter};
+
 use crate::client_registry::client_event_listener::ClientEventListener;
 use crate::ApplicationContext;
-use futures_util::StreamExt;
-use std::net::{IpAddr, SocketAddr};
-use std::sync::Arc;
-use tokio::sync::Mutex;
-use warp::ws::WebSocket;
-use warp::{ws, Filter};
+
+pub mod message;
+
+pub mod jwt;
 
 pub(crate) async fn initialize(app_context: Arc<Mutex<ApplicationContext>>) {
     let config = app_context.lock().await.config.clone();
@@ -19,27 +23,32 @@ pub(crate) async fn initialize(app_context: Arc<Mutex<ApplicationContext>>) {
 
     let cors = warp::cors()
         .allow_any_origin()
-        .allow_headers(vec!["user-agent", "content-type"])
-        .allow_methods(vec!["GET", "POST", "DELETE", "OPTIONS"]);
+        .allow_headers(vec!["User-Agent", "Content-Type", "Authorization"])
+        .allow_methods(vec![
+            "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD",
+        ]);
 
     let http_routes = crate::api::create_routes(app_context.clone(), api_path);
     let context = warp::any().map(move || app_context.clone()).boxed();
 
     let ws_routes = warp::path(ws_path)
-        .and(warp::addr::remote())
         .and(context)
-        .and(warp::header::optional::<String>("user-agent"))
+        .and(warp::query::<HashMap<String, String>>()) // Add this to extract query parameters
         .and(warp::ws())
-        .map(
-            move |remote_addr: Option<SocketAddr>,
-                  application_context,
-                  user_agent: Option<String>,
-                  ws: ws::Ws| {
-                ws.on_upgrade(move |socket| {
-                    handle_client_connection(socket, application_context, remote_addr, user_agent)
-                })
+        .and_then(
+            move |application_context, query_params: HashMap<String, String>, ws: ws::Ws| async move {
+                match query_params.get("auth_token") {
+                    Some(auth_token) => {
+                        let auth_token = auth_token.to_string();
+                        Ok(ws.on_upgrade(move |socket| {
+                            handle_client_connection(socket, application_context, auth_token.clone())
+                        }))
+                    }
+                    None => Err(warp::reject::custom(WarpError)),
+                }
             },
         )
+        .recover(handle_rejection)
         .boxed();
 
     warp::serve(http_routes.or(ws_routes).with(cors))
@@ -50,42 +59,54 @@ pub(crate) async fn initialize(app_context: Arc<Mutex<ApplicationContext>>) {
         .await;
 }
 
+async fn handle_rejection(err: warp::Rejection) -> Result<impl warp::Reply, warp::Rejection> {
+    if err.is_not_found() {
+        Ok(warp::reply::with_status(
+            "Not Found",
+            warp::http::StatusCode::NOT_FOUND,
+        ))
+    } else {
+        Err(err)
+    }
+}
+
 async fn handle_client_connection(
     ws: WebSocket,
     app_context: Arc<Mutex<ApplicationContext>>,
-    remote_addr: Option<SocketAddr>,
-    user_agent: Option<String>,
+    auth_token: String,
 ) {
-    let (tx, rx) = ws.split();
-    let tx = Arc::new(Mutex::new(tx));
-    let fragment_registry = { app_context.lock().await.fragment_registry.clone() };
-    let fragment_registry = Arc::new(Mutex::new(fragment_registry));
-    // Create a new client and register it
-    let client = Client::new(
-        fragment_registry,
-        remote_addr.map_or(String::new(), |addr| addr.to_string()),
-        user_agent.unwrap_or_default(),
-        tx.clone(),
-    );
-    let uuid = client.uuid;
-    let client = Arc::new(Mutex::new(client));
-    let mut client_event_listener = ClientEventListener::new(client.clone(), rx, tx);
-    app_context
+    let (mut tx, rx) = ws.split();
+    let client_registry = { app_context.lock().await.client_registry.clone() };
+    let client_opt = client_registry
         .lock()
         .await
-        .client_registry
-        .lock()
-        .await
-        .register(uuid, client);
-    client_event_listener.handle_events().await;
-    app_context
-        .lock()
-        .await
-        .client_registry
-        .lock()
-        .await
-        .unregister(uuid);
+        .get_client_by_token(auth_token)
+        .await;
+
+    if let Some(client) = client_opt {
+        let tx = Arc::new(Mutex::new(tx));
+        let client = Arc::new(Mutex::new(client));
+        client_registry
+            .lock()
+            .await
+            .handle_connection(client.lock().await.uuid)
+            .await;
+        let mut client_event_listener = ClientEventListener::new(client.clone(), rx, tx);
+        client_event_listener.handle_events().await;
+        client_registry
+            .lock()
+            .await
+            .handle_disconnection(client.lock().await.uuid)
+            .await;
+    } else {
+        let _ = tx.send(Message::close()).await;
+    }
 }
+
+#[derive(Debug)]
+pub struct WarpError;
+
+impl warp::reject::Reject for WarpError {}
 
 // #[cfg(test)]
 // mod tests {

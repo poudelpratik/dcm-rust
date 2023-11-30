@@ -2,7 +2,8 @@ import {initialize} from "./CodeDistributor/exports.js";
 
 await initialize({
   codeDistributorDir: '/static/js/CodeDistributor/',
-  codeDistributorPort: 51335,
+  codeDistributorApiUrl: 'http://localhost:51335/api/',
+  codeDistributorWsUrl: 'ws://localhost:51335/ws',
   maxReconnectAttempts: 3,
 });
 
