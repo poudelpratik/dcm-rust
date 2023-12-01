@@ -71,7 +71,7 @@ impl Client {
 
     pub fn disconnected(&mut self) {
         self.connected = false;
-        info!("Client connected: {:?}", &self.uuid);
+        info!("Client disconnected: {:?}", &self.uuid);
     }
 
     async fn send_message<T>(&mut self, data: T, event: Events) -> Result<(), ApplicationError>
