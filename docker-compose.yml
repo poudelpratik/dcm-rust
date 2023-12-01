@@ -2,7 +2,7 @@ version: '3.7'
 
 services:
   wasm-generator:
-#    user: "1000:1000"
+    #    user: "1000:1000"
     image: wasm-generator
     build: ./wasm-generator
     environment:
@@ -27,7 +27,7 @@ services:
     profiles:
       - run-app
 
-  demo-app:
+  runtime-code-mobility-demo:
     image: runtime-code-mobility-demo
     build: ./runtime-code-mobility-demo
     environment:

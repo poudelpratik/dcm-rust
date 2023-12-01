@@ -1,0 +1,18 @@
+version: '3.7'
+
+services:
+  code-distributor:
+    image: pratik90/code-distributor
+    environment:
+      app_port: 51335
+    ports:
+      - "51335:51335"
+
+  runtime-code-mobility-demo:
+    image: pratik90/runtime-code-mobility-demo
+    environment:
+      app_port: 8081
+      code_distributor_ws_url: "ws://localhost:51335/ws/"
+      code_distributor_api_url: "http://localhost:51335/api/"
+    ports:
+      - "8081:8081"
