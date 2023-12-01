@@ -31,7 +31,14 @@ pub(crate) async fn initialize(
 
     let cors = warp::cors()
         .allow_any_origin()
-        .allow_headers(vec!["User-Agent", "Content-Type", "X-Authorization"])
+        .allow_headers(vec![
+            "User-Agent",
+            "Content-Type",
+            "X-Authorization",
+            "X-Api-Key",
+            "Access-Control-Request-Method",
+            "Origin",
+        ])
         .allow_methods(vec![
             "GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH", "HEAD",
         ]);
