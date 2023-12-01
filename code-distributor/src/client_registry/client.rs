@@ -10,6 +10,7 @@ use warp::ws::{Message as WsMessage, WebSocket};
 
 use crate::client_registry::client_event_listener::UpdateFragmentData;
 use crate::connection_handler::message::{Events, Message};
+use crate::fragment_registry::fragment::Fragment;
 use crate::fragment_registry::FragmentRegistry;
 use crate::util::error::ApplicationError;
 
@@ -17,7 +18,6 @@ use crate::util::error::ApplicationError;
 pub(crate) struct Client {
     pub(crate) uuid: Uuid,
     pub(crate) fragment_registry: FragmentRegistry,
-    pub(crate) auth_token: String,
     pub(crate) connected: bool,
     pub(crate) tx: Option<Arc<Mutex<SplitSink<WebSocket, WsMessage>>>>,
 }
@@ -26,13 +26,11 @@ impl Client {
     pub(crate) fn new(
         uuid: Uuid,
         fragment_registry: FragmentRegistry,
-        auth_token: String,
         tx: Option<Arc<Mutex<SplitSink<WebSocket, WsMessage>>>>,
     ) -> Self {
         Self {
             uuid,
             fragment_registry,
-            auth_token,
             connected: false,
             tx,
         }
@@ -94,7 +92,7 @@ impl Client {
 #[derive(Debug, Clone, Serialize)]
 pub(crate) struct ClientDto {
     pub(crate) uuid: Uuid,
-    pub(crate) fragment_registry: FragmentRegistry,
+    pub(crate) fragments: Vec<Fragment>,
     pub(crate) connected: bool,
 }
 
@@ -102,7 +100,7 @@ impl From<Client> for ClientDto {
     fn from(client: Client) -> Self {
         Self {
             uuid: client.uuid,
-            fragment_registry: client.fragment_registry,
+            fragments: client.fragment_registry.fragments,
             connected: client.connected,
         }
     }

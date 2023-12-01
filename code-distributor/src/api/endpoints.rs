@@ -14,6 +14,7 @@ use crate::client_registry::ClientRegistry;
 use crate::connection_handler::jwt::Claims;
 use crate::connection_handler::WarpError;
 use crate::fragment_registry::FragmentRegistry;
+use crate::util::constants::JWT_KEY;
 use crate::AppData;
 
 /// This function returns a list of all the clients connected to the server.
@@ -22,7 +23,7 @@ pub(crate) async fn get_all_clients(
 ) -> Result<impl Reply, Rejection> {
     let clients = client_registry.lock().await.get_all_clients().await;
     info!("Getting all clients");
-    let clients: Vec<ClientDto> = clients.into_iter().map(|c| ClientDto::from(c)).collect();
+    let clients: Vec<ClientDto> = clients.into_iter().map(ClientDto::from).collect();
     Ok(warp::reply::json(&clients))
 }
 
@@ -76,7 +77,7 @@ pub(crate) async fn authenticate(
             let validation = Validation::default();
             let token_data = match decode::<Claims>(
                 token,
-                &DecodingKey::from_secret("secret".as_ref()),
+                &DecodingKey::from_secret(JWT_KEY.as_ref()),
                 &validation,
             ) {
                 Ok(data) => data,
@@ -130,21 +131,15 @@ async fn create_client(
         .map(|hv| hv.to_str().unwrap_or_default().to_string())
         .unwrap_or_default();
 
-    let jwt_key = "secret";
     let uuid = Uuid::new_v4();
     let claims = Claims::new(uuid.to_string(), user_agent, ip_address, 10000000000);
     let auth_token = encode(
         &Header::new(jsonwebtoken::Algorithm::HS256),
         &claims,
-        &EncodingKey::from_secret(jwt_key.as_ref()),
+        &EncodingKey::from_secret(JWT_KEY.as_ref()),
     )
     .unwrap_or_default();
-    let client = Arc::new(Mutex::new(Client::new(
-        uuid,
-        fragment_registry,
-        auth_token.clone(),
-        None,
-    )));
+    let client = Arc::new(Mutex::new(Client::new(uuid, fragment_registry, None)));
     client_registry.lock().await.register(uuid, client);
     (uuid, auth_token)
 }

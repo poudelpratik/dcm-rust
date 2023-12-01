@@ -3,12 +3,16 @@ use std::net::IpAddr;
 use std::sync::Arc;
 
 use futures_util::{SinkExt, StreamExt};
+use jsonwebtoken::{decode, Algorithm, DecodingKey, Validation};
 use tokio::sync::Mutex;
+use uuid::Uuid;
 use warp::ws::{Message, WebSocket};
 use warp::{ws, Filter};
 
 use crate::client_registry::client_event_listener::ClientEventListener;
 use crate::client_registry::ClientRegistry;
+use crate::connection_handler::jwt::Claims;
+use crate::util::constants::JWT_KEY;
 use crate::AppData;
 
 pub mod message;
@@ -82,20 +86,37 @@ async fn handle_client_connection(
     auth_token: String,
 ) {
     let (mut tx, rx) = ws.split();
-    let client_opt = client_registry
-        .lock()
-        .await
-        .get_client_ref_by_token(auth_token)
-        .await;
+    let validation = Validation::new(Algorithm::HS256);
 
-    if let Some(client) = client_opt {
-        let tx = Arc::new(Mutex::new(tx));
-        client.lock().await.connected(tx.clone()).await;
-        let mut client_event_listener = ClientEventListener::new(rx, tx);
-        client_event_listener.handle_events().await;
-        client.lock().await.disconnected();
-    } else {
-        tx.send(Message::close()).await.ok();
+    match decode::<Claims>(
+        &auth_token,
+        &DecodingKey::from_secret(JWT_KEY.as_ref()),
+        &validation,
+    ) {
+        Ok(token_data) => match Uuid::parse_str(&token_data.claims.uuid) {
+            Ok(uuid) => {
+                let client_opt = client_registry
+                    .lock()
+                    .await
+                    .get_client_ref_by_id(uuid)
+                    .await;
+                if let Some(client) = client_opt {
+                    let tx = Arc::new(Mutex::new(tx));
+                    client.lock().await.connected(tx.clone()).await;
+                    let mut client_event_listener = ClientEventListener::new(rx, tx);
+                    client_event_listener.handle_events().await;
+                    client.lock().await.disconnected();
+                } else {
+                    tx.send(Message::close()).await.ok();
+                }
+            }
+            Err(_) => {
+                tx.send(Message::close()).await.ok();
+            }
+        },
+        Err(_) => {
+            tx.send(Message::close()).await.ok();
+        }
     }
 }
 
