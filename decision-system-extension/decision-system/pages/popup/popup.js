@@ -1,5 +1,5 @@
 const DEBUG = false;
-const API_KEY = 'XDrduxcZBJfhYQZQ';
+const API_KEY = 'tZwqxgVXSEaqYQZ';
 let ALERT_TIMEOUT = null;
 let browser = chrome;
 

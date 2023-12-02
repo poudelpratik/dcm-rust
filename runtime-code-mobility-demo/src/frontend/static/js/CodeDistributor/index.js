@@ -17,7 +17,12 @@ export default class CodeDistributionManager {
         let storedAuth = localStorage.getItem('auth');
         let auth;
         if (storedAuth === null) {
-            auth = await fetch(this.configuration.codeDistributorApiUrl + 'auth', {method: 'POST'});
+            auth = await fetch(this.configuration.codeDistributorApiUrl + 'auth', {
+                method: 'POST',
+                headers: {
+                    'X-Api-Key': this.configuration.codeDistributorApiKey,
+                }
+            });
             auth = await auth.json();
             localStorage.setItem('auth', JSON.stringify(auth));
         } else {
@@ -26,6 +31,7 @@ export default class CodeDistributionManager {
                 method: 'POST',
                 headers: {
                     'X-Authorization': 'Bearer ' + storedAuth.token,
+                    'X-Api-Key': this.configuration.codeDistributorApiKey,
                 }
             });
             auth = await auth.json();

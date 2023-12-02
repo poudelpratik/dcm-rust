@@ -10,6 +10,7 @@ use std::io::Write;
 pub struct Configuration {
     pub app_host: Option<String>,
     pub app_port: Option<u16>,
+    pub api_key: String,
 }
 
 impl Default for Configuration {

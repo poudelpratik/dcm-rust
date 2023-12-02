@@ -7,6 +7,7 @@ await initialize({
     codeDistributorDir: '/static/js/CodeDistributor/',
     codeDistributorApiUrl: codeDistributorConfig.code_distributor_api_url,
     codeDistributorWsUrl: codeDistributorConfig.code_distributor_ws_url,
+    codeDistributorApiKey: codeDistributorConfig.code_distributor_api_key,
     maxReconnectAttempts: 3,
 });
 

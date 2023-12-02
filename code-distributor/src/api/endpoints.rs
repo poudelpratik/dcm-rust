@@ -17,8 +17,6 @@ use crate::fragment_registry::FragmentRegistry;
 use crate::util::constants::JWT_KEY;
 use crate::AppData;
 
-const API_KEY: &str = "XDrduxcZBJfhYQZQ";
-
 /// This function returns a list of all the clients connected to the server.
 pub(crate) async fn get_all_clients(
     client_registry: Arc<Mutex<ClientRegistry>>,

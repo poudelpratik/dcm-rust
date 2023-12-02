@@ -14,6 +14,7 @@ pub struct Configuration {
 
     pub code_distributor_api_url: String,
     pub code_distributor_ws_url: String,
+    pub code_distributor_api_key: String,
 }
 
 impl Default for Configuration {
@@ -47,6 +48,7 @@ impl Configuration {
 pub struct CodeDistributorConfiguration {
     pub code_distributor_api_url: String,
     pub code_distributor_ws_url: String,
+    pub code_distributor_api_key: String,
 }
 
 impl From<Configuration> for CodeDistributorConfiguration {
@@ -54,6 +56,7 @@ impl From<Configuration> for CodeDistributorConfiguration {
         Self {
             code_distributor_api_url: config.code_distributor_api_url,
             code_distributor_ws_url: config.code_distributor_ws_url,
+            code_distributor_api_key: config.code_distributor_api_key,
         }
     }
 }
