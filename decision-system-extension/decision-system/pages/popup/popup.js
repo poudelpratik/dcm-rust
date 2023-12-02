@@ -289,14 +289,13 @@ const loadClientHandler = async (evt) => {
         url.pathname = `api/clients/${clientId}`;
         const response = await fetch(url, {
             method: 'GET',
-            mode: 'cors',
-            credentials: 'same-origin',
             headers: {
                 'X-Api-Key': API_KEY,
             },
         });
 
         client = await response.json();
+
     } catch (err) {
         showAlert('error', 'fetch request failed');
         browser.storage.local.remove('Client', function () {
@@ -304,7 +303,6 @@ const loadClientHandler = async (evt) => {
                 console.error(browser.runtime.lastError);
             }
         });
-
         console.error(err);
         return;
     }
@@ -355,8 +353,6 @@ const fetchClientsHandler = async (evt) => {
 
         const response = await fetch(url, {
             method: 'GET',
-            mode: 'cors',
-            credentials: 'same-origin',
             headers: {
                 'X-Api-Key': API_KEY,
             },
@@ -396,10 +392,11 @@ const fetchClientsHandler = async (evt) => {
         return cell;
     };
 
+    let serial = 1;
     clients.forEach((fragment) => {
         const row = document.createElement('tr');
         row.classList.add('d-flex');
-        const nr = createClientPosCell(fragment['pos']);
+        const nr = createClientPosCell(serial++);
         const uuid = createClientUUIDCell(fragment['uuid']);
         row.append(nr, uuid);
         rows.push(row);

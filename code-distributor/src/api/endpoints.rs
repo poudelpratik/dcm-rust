@@ -32,7 +32,7 @@ pub(crate) async fn get_client(
     id: Uuid,
     client_registry: Arc<Mutex<ClientRegistry>>,
 ) -> Result<impl Reply, Rejection> {
-    info!("Getting client information of client: {}", id);
+    info!("Getting fragment information of client: {}", id);
     let client = client_registry.lock().await.get_client_ref_by_id(id).await;
     if let Some(client) = client {
         let client = client.lock().await;
