@@ -28,27 +28,27 @@ pub(crate) fn create_routes(
         .and(warp::path("clients"))
         .and(warp::get())
         .and(client_registry.clone())
-        .and_then(endpoints::get_all_clients)
-        .and(api_key_validation.clone());
+        .and(api_key_validation.clone())
+        .and_then(endpoints::get_all_clients);
 
     let get_client = base_path
         .clone()
-        .and(warp::path("clients"))
+        .and(warp::path("client"))
         .and(warp::path::param::<Uuid>())
         .and(warp::get())
         .and(client_registry.clone())
-        .and_then(endpoints::get_client)
-        .and(api_key_validation.clone());
+        .and(api_key_validation.clone())
+        .and_then(endpoints::get_client);
 
     let update_client = base_path
         .clone()
-        .and(warp::path("clients"))
+        .and(warp::path("client"))
         .and(warp::path::param::<Uuid>()) // Capture the client ID as a path parameter
         .and(warp::put()) // Use PUT method
         .and(warp::body::json::<Vec<UpdateFragmentData>>())
         .and(client_registry.clone())
-        .and_then(endpoints::update_client)
-        .and(api_key_validation.clone());
+        .and(api_key_validation.clone())
+        .and_then(endpoints::update_client);
 
     let authenticate = base_path
         .clone()
@@ -57,8 +57,8 @@ pub(crate) fn create_routes(
         .and(warp::header::headers_cloned())
         .and(app_data.clone())
         .and(client_registry.clone())
-        .and_then(endpoints::authenticate)
-        .and(api_key_validation.clone());
+        .and(api_key_validation.clone())
+        .and_then(endpoints::authenticate);
 
     get_client
         .or(update_client)

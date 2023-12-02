@@ -241,7 +241,7 @@ const updateClientHandler = async (evt) => {
 
     try {
         let url = new URL(codeDistributorHost);
-        url.pathname = `api/clients/${clientId}`;
+        url.pathname = `api/client/${clientId}`;
 
         const response = await fetch(url, {
             method: 'PUT',
@@ -286,7 +286,7 @@ const loadClientHandler = async (evt) => {
 
     try {
         let url = new URL(codeDistributorHost);
-        url.pathname = `api/clients/${clientId}`;
+        url.pathname = `api/client/${clientId}`;
         const response = await fetch(url, {
             method: 'GET',
             headers: {

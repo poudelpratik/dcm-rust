@@ -99,9 +99,10 @@ export default class DecisionSystemSimulator {
     async executionLocationUpdated() {
         const executionLocation = document.getElementById('executionLocation').checked ? 'Server' : 'Client';
         const selectedFuncId = document.getElementById('fragmentSelect').value;
-        await fetch(this.configuration.codeDistributorApiUrl + 'clients/' + this.auth.client_id, {
+        await fetch(this.configuration.codeDistributorApiUrl + 'client/' + this.auth.client_id, {
             headers: {
                 'Content-Type': 'application/json',
+                'X-Api-Key': this.configuration.codeDistributorApiKey,
             },
             method: 'PUT',
             body: JSON.stringify([{id: selectedFuncId, execution_location: executionLocation}])
