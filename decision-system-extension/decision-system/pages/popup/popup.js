@@ -295,7 +295,7 @@ const loadClientHandler = async (evt) => {
         });
 
         client = await response.json();
-
+        showAlert('success', 'Client loaded.');
     } catch (err) {
         showAlert('error', 'fetch request failed');
         browser.storage.local.remove('Client', function () {
