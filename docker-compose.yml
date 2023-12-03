@@ -13,7 +13,7 @@ services:
       compilation_enable_wasm_optimization: "true"
       compilation_max_thread_pool: 6
     volumes:
-      - ./runtime-code-mobility-demo:/project
+      - ./runtime-code-mobility-demo:/usr/src/app
     profiles:
       - generate-wasm
 
@@ -21,9 +21,9 @@ services:
     image: code-distributor
     build: ./code-distributor
     environment:
-      app_port: 51335
+      app_port: 8082
     ports:
-      - "51335:51335"
+      - "8082:8082"
     profiles:
       - run-app
 

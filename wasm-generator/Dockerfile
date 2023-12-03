@@ -6,7 +6,7 @@ LABEL maintainer="Pratik Poudel<pratikpoudel90@gmail.com>"
 ARG BUILD_MODE=debug
 
 # Set the current working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /app
 
 # Create a new user inside the container
 #ARG USER=wasm_generator
@@ -27,10 +27,10 @@ RUN if [ "$BUILD_MODE" = "release" ] ; then cargo build --release; else cargo bu
 FROM rust:1.74
 ARG BUILD_MODE=debug
 # Copy the binary from the builder stage. Change this from debug to release later, currently it is in debug for development purposes for its reduced compilation time.
-COPY --from=builder /usr/src/app/target/${BUILD_MODE}/wasm-generator /usr/local/bin/
+COPY --from=builder /app/target/${BUILD_MODE}/wasm-generator /usr/local/bin/
 
 # Copy the Config.toml from the builder stage
-COPY --from=builder /usr/src/app/Config.toml /usr/local/bin/
+COPY --from=builder /app/Config.toml /usr/local/bin/
 
 # Install the rust-analyzer to be used by LspClient
 RUN rustup component add rust-analyzer

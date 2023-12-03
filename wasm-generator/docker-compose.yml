@@ -1,0 +1,15 @@
+version: '3.7'
+
+services:
+  wasm-generator:
+    image: pratik90/wasm-generator
+    environment:
+      host_project: "/project"
+      server_code_distributor: "/code-distributor"
+      client_code_distributor: "/project/src/frontend/static/js/CodeDistributor"
+      compilation_enable_release_mode: "true"
+      compilation_enable_wasm_optimization: "true"
+      compilation_max_thread_pool: 6
+    volumes:
+      - ../runtime-code-mobility-demo:/project
+      - ../code-distributor:/code-distributor
