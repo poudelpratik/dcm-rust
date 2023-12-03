@@ -8,7 +8,7 @@ ARG BUILD_MODE=debug
 WORKDIR /app
 
 COPY src ./src
-COPY Cargo.toml Cargo.lock Config.toml ./
+COPY Cargo.toml Cargo.lock ./
 COPY fragments ./fragments
 
 # Build the application
@@ -21,7 +21,6 @@ COPY --from=builder /app/target/${BUILD_MODE}/code-distributor /usr/local/bin/
 
 # Set the current working directory inside the container
 WORKDIR /app
-COPY --from=builder /app/Config.toml ./Config.toml
 COPY --from=builder /app/fragments ./fragments
 
 # Run the application

@@ -1,54 +1,33 @@
-use figment::providers::Format;
-use figment::{
-    providers::{Env, Toml},
-    Figment,
-};
+use figment::{providers::Env, Figment};
 use serde_derive::{Deserialize, Serialize};
-use std::io::Write;
 
 #[derive(Debug, Deserialize, Clone, Serialize)]
 pub struct Configuration {
     pub app_host: Option<String>,
     pub app_port: Option<u16>,
     pub api_key: String,
-}
-
-impl Default for Configuration {
-    fn default() -> Configuration {
-        let config: Configuration = Figment::new()
-            .merge(Toml::file("Config.toml"))
-            .merge(Env::raw())
-            .extract()
-            .unwrap();
-        config
-    }
+    pub fragments_dir: String,
 }
 
 impl Configuration {
-    pub fn init_logger(&self) {
-        env_logger::builder()
-            .format(|buf, record| {
-                writeln!(
-                    buf,
-                    "{} [{}] - {}",
-                    chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
-                    record.level(),
-                    record.args()
-                )
-            })
-            .init();
+    pub fn new(
+        api_key: String,
+        app_port: Option<u16>,
+        fragments_dir: String,
+        app_host: Option<String>,
+    ) -> Self {
+        Configuration {
+            app_host,
+            app_port,
+            api_key,
+            fragments_dir,
+        }
     }
-}
 
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use log::info;
-
-    #[test]
-    fn test_logger() {
-        let config = Configuration::default();
-        config.init_logger();
-        info!("Logging works...");
+    pub fn from_env() -> Self {
+        Figment::new()
+            .merge(Env::raw())
+            .extract()
+            .expect("Failed to load configuration")
     }
 }

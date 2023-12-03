@@ -6,6 +6,7 @@
       <sourceFolder url="file://$MODULE_DIR$/runtime-code-mobility-demo/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/wasm-generator/src" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/decision-system-simulator/src" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/code-distributor/benches" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/code-distributor/fragments" />
       <excludeFolder url="file://$MODULE_DIR$/code-distributor/target" />
       <excludeFolder url="file://$MODULE_DIR$/runtime-code-mobility-demo/target" />

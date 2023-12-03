@@ -7,8 +7,7 @@ mod shared;
 
 use crate::configuration::{CodeDistributorConfiguration, Configuration};
 use crate::routes::index_routes;
-use actix_web::{get, web, App, HttpResponse, HttpServer, Responder};
-use std::io::Write;
+use actix_web::{web, App, HttpResponse, HttpServer, Responder};
 
 #[actix_web::main]
 async fn main() {

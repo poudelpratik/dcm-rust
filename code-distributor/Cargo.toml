@@ -6,7 +6,7 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-warp = {version = "0.3.5", features = ["tls"]}
+warp = { version = "0.3.5", features = ["tls"] }
 serde = "1.0.176"
 serde_json = "1.0.104"
 serde_derive = "1.0.163"
@@ -22,7 +22,14 @@ rmp-serde = "1.1.2"
 byteorder = "1.4.3"
 thiserror = "1.0.48"
 async-trait = "0.1.73"
-figment = { version = "0.10.10", features = ["toml", "env"] }
+figment = { version = "0.10.10", features = ["env"] }
 jsonwebtoken = "9.1.0"
-headers = { version = "0.3.9", features = [] }
-http = "0.2.9"
+
+[dev-dependencies]
+time = "0.3.30"
+criterion = { version = "0.5.1", features = ["cargo_bench_support"] }
+
+[[bench]]
+name = "wasm_exeution_benchmark"
+harness = false
+path = "benches/wasm_execution_benchmark.rs"

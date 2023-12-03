@@ -8,13 +8,13 @@ use std::sync::atomic::AtomicBool;
 use std::sync::Arc;
 use tokio::sync::Mutex;
 
-pub mod api;
-pub mod client_registry;
+mod api;
+mod client_registry;
 pub mod configuration;
-pub mod connection_handler;
-pub mod fragment_executor;
-pub mod fragment_registry;
-pub mod util;
+mod connection_handler;
+mod fragment_executor;
+mod fragment_registry;
+mod util;
 
 static INIT_CALLED: AtomicBool = AtomicBool::new(false);
 
@@ -26,9 +26,10 @@ pub async fn init(config: Configuration) {
 
     // Initialize the fragment registry
     // Parse executable_fragments.json file and store it in the fragment registry
-    let final_fragments_json =
-        util::file_handler::read(&PathBuf::from("fragments").join("executable_fragments.json"))
-            .expect("Unable to read executable_fragments.json file");
+    let final_fragments_json = util::file_handler::read(
+        &PathBuf::from(&config.fragments_dir).join("executable_fragments.json"),
+    )
+    .expect("Unable to read executable_fragments.json file");
     let fragments = serde_json::from_str::<Vec<Fragment>>(final_fragments_json.as_str())
         .expect("Unable to parse executable_fragments.json file");
     let fragment_registry = FragmentRegistry::new(fragments);

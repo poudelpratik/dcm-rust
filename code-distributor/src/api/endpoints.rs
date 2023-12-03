@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
-use http::HeaderMap;
 use jsonwebtoken::{decode, encode, DecodingKey, EncodingKey, Header, Validation};
 use log::info;
 use serde_derive::Serialize;
 use tokio::sync::Mutex;
 use uuid::Uuid;
+use warp::http::HeaderMap;
 use warp::{Rejection, Reply};
 
 use crate::client_registry::client::{Client, ClientDto};
