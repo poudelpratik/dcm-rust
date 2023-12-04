@@ -8,13 +8,13 @@ use code_distributor::fragment_executor::wasmer_runtime::WasmerInstance;
 const FRAGMENT_PATH: &str = "benches/resources/wasm";
 
 fn fibonacci_benchmark(c: &mut Criterion) {
-    let parameters = vec![20, 40, 50];
+    let parameters = vec![20, 30, 40];
     let function_name = "execute__fibonacci";
     let fragment_path = PathBuf::from(FRAGMENT_PATH).join("fibonacci.wasm");
 
     let mut group = c.benchmark_group("Fibonacci");
     for param in parameters {
-        group.sample_size(10);
+        group.sample_size(100);
         group.bench_with_input(BenchmarkId::from_parameter(param), &param, |b, &param| {
             let params: Vec<Value> = vec![Value::from(param)];
             b.iter(|| {
@@ -33,7 +33,7 @@ fn factorial_benchmark(c: &mut Criterion) {
 
     let mut group = c.benchmark_group("Factorial");
     for param in parameters {
-        group.sample_size(10);
+        group.sample_size(100);
         group.bench_with_input(BenchmarkId::from_parameter(param), &param, |b, &param| {
             let params: Vec<Value> = vec![Value::from(param)];
             b.iter(|| {

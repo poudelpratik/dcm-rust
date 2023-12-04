@@ -12,7 +12,7 @@ mod api;
 mod client_registry;
 pub mod configuration;
 mod connection_handler;
-mod fragment_executor;
+pub mod fragment_executor;
 mod fragment_registry;
 mod util;
 
