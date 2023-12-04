@@ -3,3 +3,4 @@
 rust_files.json
 executable_fragments.json
 dependency_fragments.json
+/benchmarks
