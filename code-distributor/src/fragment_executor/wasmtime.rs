@@ -57,9 +57,7 @@ pub fn execute(
 ) -> Result<String, ApplicationError> {
     let mut store = Store::new(&module_info.engine, 4);
     let instance = Instance::new(&mut store, &module_info.module, &[]).unwrap();
-    let func = instance
-        .get_typed_func::<(i32, i32), i32>(&mut store, &function_name)
-        .unwrap();
+    let func = instance.get_typed_func::<(i32, i32), i32>(&mut store, &function_name)?;
     let memory = instance.get_memory(&mut store, "memory").unwrap();
 
     let mut args: Vec<u8> = Vec::new();
@@ -79,18 +77,16 @@ pub fn execute(
     // grow memory if needed
     let total_length = args.len();
     let required_pages = (total_length + WASM_PAGE_SIZE - 1) / WASM_PAGE_SIZE;
-    memory.grow(&mut store, required_pages as u64).unwrap();
+    memory.grow(&mut store, required_pages as u64)?;
 
     // Allocate memory in WebAssembly and get the pointer
-    let alloc_func = instance
-        .get_typed_func::<i32, i32>(&mut store, "alloc")
-        .unwrap();
-    let ptr = alloc_func.call(&mut store, total_length as i32).unwrap();
+    let alloc_func = instance.get_typed_func::<i32, i32>(&mut store, "alloc")?;
+    let ptr = alloc_func.call(&mut store, total_length as i32)?;
 
     // Get the memory view, write bytes to memory, and call the function
     let view = memory;
-    view.write(&mut store, ptr as usize, &args).unwrap();
-    let pointer = func.call(&mut store, (ptr, params.len() as i32)).unwrap();
+    view.write(&mut store, ptr as usize, &args)?;
+    let pointer = func.call(&mut store, (ptr, params.len() as i32))?;
 
     let data = memory.data(&store);
     let output_len = {

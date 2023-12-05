@@ -1,4 +1,5 @@
 use thiserror::Error;
+
 // use wasmer::ExportError;
 
 #[derive(Error, Debug)]
@@ -20,11 +21,14 @@ pub enum ApplicationError {
     // WasmerMemoryAccessError(#[from] wasmer::MemoryAccessError),
     // #[error("WasmerMemoryError")]
     // WasmerMemoryError(#[from] wasmer::MemoryError),
+    #[error("WasmRuntimeError")]
+    WasmtimeError(#[from] wasmtime::Error),
+    #[error("WasmtimeMemoryAccessError")]
+    WasmerMemoryAccessError(#[from] wasmtime::MemoryAccessError),
     #[error("message: {message}")]
     WasmError { message: String },
     #[error("WebSocketError")]
     WebSocketError(#[from] warp::Error),
-
     #[error("DecondingError")]
     DecodingError(#[from] rmp_serde::decode::Error),
 }
