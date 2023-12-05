@@ -1,38 +1,18 @@
 version: '3.7'
 
 services:
-  wasm-generator:
-    #    user: "1000:1000"
-    image: wasm-generator
-    build: ./wasm-generator
-    environment:
-      host_project: "/project"
-      server_code_distributor: "./code-distributor"
-      client_code_distributor: "/project/src/frontend/static/js/CodeDistributor"
-      compilation_enable_release_mode: "true"
-      compilation_enable_wasm_optimization: "true"
-      compilation_max_thread_pool: 6
-    volumes:
-      - ./runtime-code-mobility-demo:/usr/src/app
-    profiles:
-      - generate-wasm
-
   code-distributor:
-    image: code-distributor
-    build: ./code-distributor
+    image: pratik90/code-distributor
     environment:
       app_port: 8082
     ports:
       - "8082:8082"
-    profiles:
-      - run-app
 
   runtime-code-mobility-demo:
-    image: runtime-code-mobility-demo
-    build: ./runtime-code-mobility-demo
+    image: pratik90/runtime-code-mobility-demo
     environment:
       app_port: 8081
+      code_distributor_ws_url: "ws://localhost:8082/ws/"
+      code_distributor_api_url: "http://localhost:8082/api/"
     ports:
       - "8081:8081"
-    profiles:
-      - run-app

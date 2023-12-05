@@ -1,10 +1,10 @@
 use std::path::PathBuf;
 
-use code_distributor::fragment_executor;
-use code_distributor::fragment_executor::wasmer_runtime;
 use criterion::{black_box, criterion_group, criterion_main, BenchmarkId, Criterion};
 use serde_json::Value;
 use wasmtime::{Engine, Module};
+
+use code_distributor::fragment_executor;
 
 const FRAGMENT_PATH: &str = "benches/resources/wasm";
 
