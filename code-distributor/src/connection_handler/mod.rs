@@ -122,7 +122,7 @@ async fn handle_client_connection(
                     let tx = Arc::new(Mutex::new(tx));
                     client.lock().await.connected(tx.clone()).await;
                     let mut client_event_listener =
-                        ClientEventListener::new(rx, tx, app_data.config.fragments_dir.clone());
+                        ClientEventListener::new(rx, tx, app_data.fragment_executor.clone());
                     client_event_listener.handle_events().await;
                     client.lock().await.disconnected();
                 } else {

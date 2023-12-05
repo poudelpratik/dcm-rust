@@ -65,7 +65,7 @@ pub async fn run() {
     // deploy the newly generated fragments to the respective directories
     post_compilation_processor::run(&generated_fragments, &config);
     // delete the temporary directory after the deployment
-    delete_temporary_directory(&config);
+    // delete_temporary_directory(&config);
 }
 
 pub fn delete_temporary_directory(config: &Configuration) {

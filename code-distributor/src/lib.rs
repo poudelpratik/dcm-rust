@@ -33,6 +33,10 @@ pub async fn init(config: Configuration) {
     let fragments = serde_json::from_str::<Vec<Fragment>>(final_fragments_json.as_str())
         .expect("Unable to parse executable_fragments.json file");
     let fragment_registry = FragmentRegistry::new(fragments);
+    let fragment_executor = Arc::new(fragment_executor::wasmtime::Wasmtime::new(
+        &fragment_registry,
+        config.fragments_dir.clone(),
+    ));
 
     // Initialize the client registry
     let client_registry = Arc::new(Mutex::new(ClientRegistry::new()));
@@ -41,6 +45,7 @@ pub async fn init(config: Configuration) {
     let app_data = Arc::new(AppData {
         config: Arc::new(config),
         fragment_registry,
+        fragment_executor,
     });
 
     connection_handler::initialize(app_data.clone(), client_registry).await;
@@ -49,4 +54,5 @@ pub async fn init(config: Configuration) {
 pub(crate) struct AppData {
     pub config: Arc<Configuration>,
     pub fragment_registry: FragmentRegistry,
+    pub fragment_executor: Arc<dyn fragment_executor::FragmentExecutor + Send + Sync>,
 }

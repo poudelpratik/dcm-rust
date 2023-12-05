@@ -9,27 +9,25 @@ use tokio::sync::Mutex;
 use warp::ws::{Message as WsMessage, WebSocket};
 
 use crate::connection_handler::message::{Events, Message};
-use crate::fragment_executor::wasmer_runtime::WasmerRuntime;
 use crate::fragment_executor::FragmentExecutor;
 use crate::fragment_registry::fragment::ExecutionLocation;
 
-#[derive(Debug)]
 pub(crate) struct ClientEventListener {
     pub rx: SplitStream<WebSocket>,
     pub tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
-    pub fragments_dir: String,
+    pub fragment_executor: Arc<dyn FragmentExecutor>,
 }
 
 impl ClientEventListener {
     pub(crate) fn new(
         rx: SplitStream<WebSocket>,
         tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
-        fragments_dir: String,
+        fragment_executor: Arc<dyn FragmentExecutor>,
     ) -> Self {
         Self {
             rx,
             tx,
-            fragments_dir,
+            fragment_executor,
         }
     }
 
@@ -47,9 +45,9 @@ impl ClientEventListener {
                         if let Events::ExecuteFunction = message.message_type {
                             log::info!("Received ExecuteFunction event");
                             let tx = tx.clone();
-                            let fragments_dir = self.fragments_dir.clone();
+                            let fragment_executor = self.fragment_executor.clone();
                             tokio::spawn(async move {
-                                handle_execute_function_event(tx, message, fragments_dir).await
+                                handle_execute_function_event(tx, message, fragment_executor).await
                             });
                         }
                     }
@@ -65,11 +63,11 @@ impl ClientEventListener {
 async fn handle_execute_function_event(
     tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
     message: Message<Value>,
-    fragments_dir: String,
+    fragment_executor: Arc<dyn FragmentExecutor>,
 ) {
     match serde_json::from_value::<ExecuteFunctionData>(message.data) {
         Ok(execute_function_data) => {
-            let result = WasmerRuntime::new(fragments_dir)
+            let result = fragment_executor
                 .execute(
                     &execute_function_data.fragment_id,
                     &execute_function_data.function_name,

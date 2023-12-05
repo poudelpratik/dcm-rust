@@ -1,7 +1,7 @@
 use crate::util::error::ApplicationError;
 use async_trait::async_trait;
 
-pub mod wasmer_runtime;
+pub mod wasmtime;
 
 #[async_trait]
 pub(crate) trait FragmentExecutor: Send + Sync {

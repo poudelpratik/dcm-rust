@@ -41,7 +41,7 @@ if (document.readyState !== 'loading') {
 function addNavigation() {
     document.getElementById('linkWebShop').addEventListener('click', function () {
         document.getElementById('main-content').hidden = false;
-        document.getElementById('main-content3').hidden = true;
+        // document.getElementById('main-content3').hidden = true;
         document.getElementById('main-content2').hidden = true;
         // this.classList.add('active');
         // document.getElementById('linkOrderHistory').classList.remove('active');
@@ -50,19 +50,19 @@ function addNavigation() {
 
     document.getElementById('linkOrderHistory').addEventListener('click', function () {
         document.getElementById('main-content').hidden = true;
-        document.getElementById('main-content3').hidden = true;
+        // document.getElementById('main-content3').hidden = true;
         document.getElementById('main-content2').hidden = false;
         // this.classList.add('active');
         // document.getElementById('linkWebShop').classList.remove('active');
         document.getElementById('page-title').innerText = 'Order History';
     });
 
-    document.getElementById('linkPlayground').addEventListener('click', function () {
-        document.getElementById('main-content').hidden = true;
-        document.getElementById('main-content2').hidden = true;
-        document.getElementById('main-content3').hidden = false;
-        // this.classList.add('active');
-        // document.getElementById('linkWebShop').classList.remove('active');
-        document.getElementById('page-title').innerText = 'WASM Playground';
-    });
+    // document.getElementById('linkPlayground').addEventListener('click', function () {
+    //     document.getElementById('main-content').hidden = true;
+    //     document.getElementById('main-content2').hidden = true;
+    //     document.getElementById('main-content3').hidden = false;
+    //     // this.classList.add('active');
+    //     // document.getElementById('linkWebShop').classList.remove('active');
+    //     document.getElementById('page-title').innerText = 'WASM Playground';
+    // });
 }
