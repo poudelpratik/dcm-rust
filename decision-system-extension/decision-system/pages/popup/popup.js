@@ -230,15 +230,6 @@ const updateClientHandler = async (evt) => {
         return;
     }
 
-    let url = '';
-    try {
-        url = await getCurrentUrl();
-    } catch (err) {
-        showAlert('error', err);
-        console.error(err);
-        return;
-    }
-
     try {
         let url = new URL(codeDistributorHost);
         url.pathname = `api/client/${clientId}`;
@@ -254,6 +245,20 @@ const updateClientHandler = async (evt) => {
         });
         await response.json();
         showAlert('success', 'Fragments updated.');
+
+        browser.storage.local.get('Client', function (items) {
+            if (!browser.runtime.lastError) {
+                const client = items.Client;
+                if (!isUndefined(client) && !client['error']) {
+                    client.fragments = fragments;
+                    browser.storage.local.set({Client: client}, function () {
+                        if (browser.runtime.lastError) {
+                            console.log("Error: couldn't save client id.");
+                        }
+                    });
+                }
+            }
+        });
     } catch (err) {
         showAlert('error', 'update request failed');
         console.error(err);
@@ -272,15 +277,6 @@ const loadClientHandler = async (evt) => {
             console.log("Error: couldn't save client id.");
         }
     });
-
-    let url = '';
-    try {
-        url = await getCurrentUrl();
-    } catch (err) {
-        showAlert('error', err);
-        console.error(err);
-        return;
-    }
 
     let client = undefined;
 
@@ -337,13 +333,6 @@ const loadClientHandler = async (evt) => {
 const fetchClientsHandler = async (evt) => {
     let url = '';
     const codeDistributorHost = document.querySelector('#input_code_distributor_host').value;
-    try {
-        url = await getCurrentUrl();
-    } catch (err) {
-        showAlert('error', err.message);
-        console.error(err);
-        return;
-    }
 
     let clients = [];
 
