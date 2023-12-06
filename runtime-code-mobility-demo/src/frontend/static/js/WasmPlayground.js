@@ -27,3 +27,9 @@ function execute_fibonacci() {
         document.getElementById("fibonacci_result").innerHTML = result;
     });
 }
+
+document.getElementById("factorial_calc").addEventListener("click", execute_factorial);
+document.getElementById("fibonacci_calc").addEventListener("click", execute_fibonacci);
+document.getElementById("find_primes_calc").addEventListener("click", execute_find_primes);
+document.getElementById("count_vowel_calc").addEventListener("click", execute_count_vowels);
+
