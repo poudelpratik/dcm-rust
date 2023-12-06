@@ -15,7 +15,9 @@ async fn main() {
         .to_str()
         .unwrap()
         .to_string();
-    let configuration = Configuration::new("tZwqxgVXSEaqYQZ".to_string(), None, fragment_dir, None);
+    std::env::set_var("fragments_dir", fragment_dir.clone());
+    std::env::set_var("api_key", "tZwqxgVXSEaqYQZ");
+    let configuration = Configuration::from_env();
 
     // initialize code distributor
     init(configuration).await;
