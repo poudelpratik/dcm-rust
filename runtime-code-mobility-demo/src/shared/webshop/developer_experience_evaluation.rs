@@ -1,7 +1,7 @@
 use crate::shared::webshop::order_history::Order;
 use std::collections::HashMap;
 
-pub fn get_most_bought_product(orders: &[Order]) -> Option<MostBoughtProduct> {
+pub fn get_most_bought_product(orders: &Vec<Order>) -> Option<MostBoughtProduct> {
     let mut quantities: HashMap<String, u32> = HashMap::new();
 
     for order in orders {
@@ -19,7 +19,7 @@ pub fn get_most_bought_product(orders: &[Order]) -> Option<MostBoughtProduct> {
         })
 }
 
-pub fn get_most_invested_product(orders: &[Order]) -> Option<MostInvestedProduct> {
+pub fn get_most_invested_product(orders: &Vec<Order>) -> Option<MostInvestedProduct> {
     let mut amounts: HashMap<String, f64> = HashMap::new();
 
     for order in orders {
