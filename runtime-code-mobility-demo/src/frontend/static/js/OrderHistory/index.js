@@ -182,7 +182,7 @@ export default class OrderHistory {
             resultDisplay.style.marginLeft = '15px';
             featureDiv.appendChild(resultDisplay);
 
-            return { featureDiv, resultDisplay };
+            return {featureDiv, resultDisplay};
         };
 
         // Most invested Product feature
@@ -195,7 +195,7 @@ export default class OrderHistory {
                 mostSpentResultDisplay.textContent = `No orders found`;
                 return;
             }
-            mostSpentResultDisplay.textContent = `${mostSpentProduct.name} (Total Amount: ${mostSpentProduct.totalAmount.toFixed(2)})`;
+            mostSpentResultDisplay.textContent = `${mostSpentProduct.name} (Total Amount: ${mostSpentProduct.total_amount})`;
         });
 
         // Most Bought Product feature
@@ -208,7 +208,7 @@ export default class OrderHistory {
                 mostBoughtResultDisplay.textContent = `No orders found`;
                 return;
             }
-            mostBoughtResultDisplay.textContent = `${mostBoughtProduct.name} (Total Quantity: ${mostBoughtProduct.totalQuantity})`;
+            mostBoughtResultDisplay.textContent = `${mostBoughtProduct.name} (Total Quantity: ${mostBoughtProduct.total_quantity})`;
         });
 
         // Append both features to the actions container
@@ -234,7 +234,7 @@ function get_most_bought_product(orders) {
         return (curr[1] > (max[1] || 0)) ? curr : max;
     }, []);
 
-    return mostBought.length ? { name: mostBought[0], totalQuantity: mostBought[1] } : null;
+    return mostBought.length ? {name: mostBought[0], total_quantity: mostBought[1]} : null;
 }
 
 function get_most_invested_product(orders) {
@@ -250,5 +250,5 @@ function get_most_invested_product(orders) {
         return (curr[1] > (max[1] || 0)) ? curr : max;
     }, []);
 
-    return mostInvested.length ? { name: mostInvested[0], totalAmount: mostInvested[1] } : null;
+    return mostInvested.length ? {name: mostInvested[0], total_amount: mostInvested[1]} : null;
 }
