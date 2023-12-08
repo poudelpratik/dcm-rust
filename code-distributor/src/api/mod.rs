@@ -6,8 +6,8 @@ use uuid::Uuid;
 use warp::filters::BoxedFilter;
 use warp::{Filter, Reply};
 
-use crate::client_registry::client_event_listener::UpdateFragmentData;
 use crate::client_registry::ClientRegistry;
+use crate::connection_handler::event_listener::UpdateFragmentData;
 use crate::AppData;
 
 pub mod endpoints;

@@ -9,14 +9,15 @@ use uuid::Uuid;
 use warp::ws::{Message, WebSocket};
 use warp::{ws, Filter};
 
-use crate::client_registry::client_event_listener::ClientEventListener;
 use crate::client_registry::ClientRegistry;
+use crate::connection_handler::event_listener::handle_events;
 use crate::connection_handler::jwt::Claims;
 use crate::util::constants::JWT_KEY;
 use crate::AppData;
 
 pub mod message;
 
+pub mod event_listener;
 pub mod jwt;
 
 pub(crate) async fn initialize(
@@ -121,9 +122,7 @@ async fn handle_client_connection(
                 if let Some(client) = client_opt {
                     let tx = Arc::new(Mutex::new(tx));
                     client.lock().await.connected(tx.clone()).await;
-                    let mut client_event_listener =
-                        ClientEventListener::new(rx, tx, app_data.fragment_executor.clone());
-                    client_event_listener.handle_events().await;
+                    handle_events(rx, tx, app_data.fragment_executor.clone()).await;
                     client.lock().await.disconnected();
                 } else {
                     tx.send(Message::close()).await.ok();

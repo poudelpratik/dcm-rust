@@ -12,49 +12,32 @@ use crate::connection_handler::message::{Events, Message};
 use crate::fragment_executor::FragmentExecutor;
 use crate::fragment_registry::fragment::ExecutionLocation;
 
-pub(crate) struct ClientEventListener {
-    pub rx: SplitStream<WebSocket>,
-    pub tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
-    pub fragment_executor: Arc<dyn FragmentExecutor>,
-}
-
-impl ClientEventListener {
-    pub(crate) fn new(
-        rx: SplitStream<WebSocket>,
-        tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
-        fragment_executor: Arc<dyn FragmentExecutor>,
-    ) -> Self {
-        Self {
-            rx,
-            tx,
-            fragment_executor,
-        }
-    }
-
-    /// When a client connects, this function is called to listen to events and handle accordingly.
-    pub(crate) async fn handle_events(&mut self) {
-        let tx = self.tx.clone();
-        while let Some(result) = self.rx.next().await {
-            match result {
-                Ok(msg) => {
-                    if msg.is_text() {
-                        let raw_message: Value =
-                            serde_json::from_str(msg.to_str().unwrap()).unwrap_or_default();
-                        let message =
-                            serde_json::from_value::<Message<Value>>(raw_message.clone()).unwrap();
-                        if let Events::ExecuteFunction = message.message_type {
-                            log::info!("Received ExecuteFunction event");
-                            let tx = tx.clone();
-                            let fragment_executor = self.fragment_executor.clone();
-                            tokio::spawn(async move {
-                                handle_execute_function_event(tx, message, fragment_executor).await
-                            });
-                        }
+pub(crate) async fn handle_events(
+    mut rx: SplitStream<WebSocket>,
+    tx: Arc<Mutex<SplitSink<WebSocket, WsMessage>>>,
+    fragment_executor: Arc<dyn FragmentExecutor>,
+) {
+    let tx = tx.clone();
+    while let Some(result) = rx.next().await {
+        match result {
+            Ok(msg) => {
+                if msg.is_text() {
+                    let raw_message: Value =
+                        serde_json::from_str(msg.to_str().unwrap()).unwrap_or_default();
+                    let message =
+                        serde_json::from_value::<Message<Value>>(raw_message.clone()).unwrap();
+                    if let Events::ExecuteFunction = message.message_type {
+                        log::info!("Received ExecuteFunction event");
+                        let tx = tx.clone();
+                        let fragment_executor = fragment_executor.clone();
+                        tokio::spawn(async move {
+                            handle_execute_function_event(tx, message, fragment_executor).await
+                        });
                     }
                 }
-                Err(err) => {
-                    eprintln!("Error receiving message: {}", err);
-                }
+            }
+            Err(err) => {
+                eprintln!("Error receiving message: {}", err);
             }
         }
     }

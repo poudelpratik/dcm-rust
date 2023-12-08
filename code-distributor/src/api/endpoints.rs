@@ -9,8 +9,8 @@ use warp::http::HeaderMap;
 use warp::{Rejection, Reply};
 
 use crate::client_registry::client::{Client, ClientDto};
-use crate::client_registry::client_event_listener::UpdateFragmentData;
 use crate::client_registry::ClientRegistry;
+use crate::connection_handler::event_listener::UpdateFragmentData;
 use crate::connection_handler::jwt::Claims;
 use crate::connection_handler::WarpError;
 use crate::fragment_registry::FragmentRegistry;

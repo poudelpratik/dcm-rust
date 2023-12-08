@@ -1,4 +1,4 @@
-use crate::client_registry::client_event_listener::UpdateFragmentData;
+use crate::connection_handler::event_listener::UpdateFragmentData;
 use crate::fragment_registry::fragment::Fragment;
 use crate::util::error::ApplicationError;
 use serde_derive::Serialize;

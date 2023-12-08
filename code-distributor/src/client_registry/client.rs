@@ -1,5 +1,6 @@
 use std::sync::Arc;
 
+use crate::connection_handler::event_listener::UpdateFragmentData;
 use futures_util::stream::SplitSink;
 use futures_util::SinkExt;
 use log::info;
@@ -8,7 +9,6 @@ use tokio::sync::Mutex;
 use uuid::Uuid;
 use warp::ws::{Message as WsMessage, WebSocket};
 
-use crate::client_registry::client_event_listener::UpdateFragmentData;
 use crate::connection_handler::message::{Events, Message};
 use crate::fragment_registry::fragment::Fragment;
 use crate::fragment_registry::FragmentRegistry;

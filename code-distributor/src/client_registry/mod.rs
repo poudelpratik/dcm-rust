@@ -9,7 +9,6 @@ use uuid::Uuid;
 use crate::client_registry::client::Client;
 
 pub mod client;
-pub mod client_event_listener;
 
 #[derive(Debug, Default)]
 pub(crate) struct ClientRegistry {
