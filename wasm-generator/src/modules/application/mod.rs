@@ -9,10 +9,10 @@ use crate::modules::{
 };
 use derive_new::new;
 use serde_derive::{Deserialize, Serialize};
+use std::io::Write;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
-
 pub(crate) mod fragment_type;
 pub mod function_fragment;
 pub mod object_fragment;
@@ -22,7 +22,7 @@ pub async fn run() {
     std::env::set_var("RUST_LOG", "debug");
 
     let config = Arc::new(Configuration::default());
-    config.init_logger();
+    init_logger();
 
     // delete the temp directory if it already exists from previous run
     delete_temporary_directory(&config);
@@ -151,4 +151,18 @@ pub struct Size {
     pub mb: f64,
     pub kb: f64,
     pub bytes: f64,
+}
+
+pub fn init_logger() {
+    env_logger::builder()
+        .format(|buf, record| {
+            writeln!(
+                buf,
+                "{} [{}] - {}",
+                chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
+                record.level(),
+                record.args()
+            )
+        })
+        .init();
 }

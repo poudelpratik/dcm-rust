@@ -43,6 +43,9 @@ RUN apt update && \
     apt install -y binaryen && \
     rm -rf /var/lib/apt/lists/*
 
+# Install the build-essential package for the linker
+RUN sudo apt install build-essential
+
 #USER $USER
 
 # Set the current working directory for runtime inside the container. This is specially so that the Config.toml file can be found.

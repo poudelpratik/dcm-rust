@@ -1,10 +1,10 @@
+use clap::Parser;
 use figment::providers::Format;
 use figment::{
     providers::{Env, Toml},
     Figment,
 };
 use serde_derive::Deserialize;
-use std::io::Write;
 
 /// This struct represents the configuration of the application
 #[derive(Debug, Deserialize, Clone)]
@@ -17,42 +17,21 @@ pub struct Configuration {
     pub compilation_max_thread_pool: Option<usize>,
 }
 
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct Args {
+    #[arg(short, long, default_value = "Config.toml")]
+    config: String,
+}
+
 impl Default for Configuration {
     fn default() -> Self {
+        let args = Args::parse();
         let config: Configuration = Figment::new()
-            .merge(Toml::file("Config.toml"))
+            .merge(Toml::file(args.config))
             .merge(Env::raw())
             .extract()
             .unwrap();
         config
-    }
-}
-
-impl Configuration {
-    pub fn init_logger(&self) {
-        env_logger::builder()
-            .format(|buf, record| {
-                writeln!(
-                    buf,
-                    "{} [{}] - {}",
-                    chrono::Local::now().format("%Y-%m-%d %H:%M:%S"),
-                    record.level(),
-                    record.args()
-                )
-            })
-            .init();
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-    use log::info;
-
-    #[test]
-    fn test_logger() {
-        let config = Configuration::default();
-        config.init_logger();
-        info!("Logging works...");
     }
 }
