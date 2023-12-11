@@ -22,7 +22,7 @@ fn get_wasm_module_source_path(
     config: &Configuration,
 ) -> PathBuf {
     let mut path = base_path.join("target").join("wasm32-unknown-unknown");
-    match config.compilation_enable_release_mode.unwrap_or(false) {
+    match config.release_mode.unwrap_or(false) {
         true => path.push("release"),
         false => path.push("debug"),
     };

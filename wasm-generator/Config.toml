@@ -1,6 +1,6 @@
 project = "/home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo"
 server_fragments_dir = "/home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/code-distributor/fragments"
 client_code_distributor_dir = "/home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/frontend/static/js/CodeDistributor"
-compilation_max_thread_pool = 6
-compilation_enable_release_mode = true
-compilation_enable_wasm_optimization = true
+max_thread_pool = 6
+release_mode = true
+optimize_wasm = true

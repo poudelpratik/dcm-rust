@@ -16,7 +16,7 @@ use crate::modules::util::thread_manager::ThreadManager;
 pub fn run(fragments: &mut Vec<FinalFragmentContext>, config: Arc<Configuration>) {
     // Create an instance of the thread manager
     let mut thread_manager = RayonThreadManager::new();
-    if let Some(max_thread_pool) = config.compilation_max_thread_pool {
+    if let Some(max_thread_pool) = config.max_thread_pool {
         thread_manager.set_max_threads(max_thread_pool);
     }
 
@@ -42,7 +42,7 @@ fn get_compile_operation<'a>(config: &Configuration) -> impl Fn(&mut FinalFragme
             error!("Error compiling fragment: {:?}", e);
             std::process::exit(1);
         }
-        if config.compilation_enable_wasm_optimization.unwrap_or(false) {
+        if config.optimize_wasm.unwrap_or(false) {
             let result = optimize(fragment, &config);
             if let Err(e) = result {
                 error!("Error optimizing fragment: {:?}", e);
@@ -59,7 +59,7 @@ fn compile(
 ) -> Result<(), ApplicationError> {
     let fragment_path = &fragment.directory.base_path;
     let mut args = vec!["build", "--target", "wasm32-unknown-unknown"];
-    if config.compilation_enable_release_mode.unwrap_or(false) {
+    if config.release_mode.unwrap_or(false) {
         args.push("--release");
     }
     info!("Compiling fragment: {:?}", &fragment_path.display());
@@ -72,8 +72,8 @@ fn compile(
             .unwrap_or_default()
             .to_string_lossy()
             .to_string(),
-        release_mode: config.compilation_enable_release_mode.unwrap_or(false),
-        optimization_mode: config.compilation_enable_wasm_optimization.unwrap_or(false),
+        release_mode: config.release_mode.unwrap_or(false),
+        optimization_mode: config.optimize_wasm.unwrap_or(false),
         compilation_time: duration,
         ..Default::default()
     };
@@ -100,7 +100,7 @@ fn optimize(
         .base_path
         .join("target")
         .join("wasm32-unknown-unknown");
-    match config.compilation_enable_release_mode.unwrap_or(false) {
+    match config.release_mode.unwrap_or(false) {
         true => fragment_path.push("release"),
         false => fragment_path.push("debug"),
     };
@@ -175,7 +175,7 @@ fn export_compilation_metrics(fragments: &mut [FinalFragmentContext], config: &C
                 .base_path
                 .join("target")
                 .join("wasm32-unknown-unknown");
-            if config.compilation_enable_release_mode.unwrap_or(false) {
+            if config.release_mode.unwrap_or(false) {
                 fragment_path.push("release");
             } else {
                 fragment_path.push("debug");
