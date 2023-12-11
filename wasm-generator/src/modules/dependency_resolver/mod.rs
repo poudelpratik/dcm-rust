@@ -54,7 +54,7 @@ impl FragmentsDependencyResolver {
         project_cargo_toml: ProjectCargoToml,
         config: Arc<Configuration>,
     ) -> Self {
-        let project_root: FilePath = config.host_project.clone().into();
+        let project_root: FilePath = config.project.clone().into();
         let project_root_url: LspFilePath = project_root.into();
         info!("Initializing LSP client");
         let mut client: Box<dyn LspClient> = Box::new(RustAnalyzerClient::new().await.unwrap());

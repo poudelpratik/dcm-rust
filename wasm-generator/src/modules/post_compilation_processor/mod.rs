@@ -35,10 +35,12 @@ fn get_wasm_module_destination_path(
     config: &Configuration,
 ) -> PathBuf {
     let path = match execution_location {
-        ExecutionLocation::Client => PathBuf::from(&config.client_code_distributor),
-        ExecutionLocation::Server => PathBuf::from(&config.server_code_distributor),
+        ExecutionLocation::Client => {
+            PathBuf::from(&config.client_code_distributor_dir).join("fragments")
+        }
+        ExecutionLocation::Server => PathBuf::from(&config.server_fragments_dir),
     };
-    path.join("fragments").join(fragment_identifier)
+    path.join(fragment_identifier)
 }
 
 pub fn move_fragments(
@@ -67,16 +69,16 @@ pub fn move_fragments(
 
 fn move_fragments_data(execution_location: ExecutionLocation, config: &&Configuration) {
     // Move executable_fragments.json to client and server code distributors
-    let source = PathBuf::from(&config.host_project)
+    let source = PathBuf::from(&config.project)
         .join(TEMP_PATH)
         .join("executable_fragments.json");
     let mut destination = match execution_location {
-        ExecutionLocation::Client => PathBuf::from(&config.client_code_distributor),
-        ExecutionLocation::Server => PathBuf::from(&config.server_code_distributor),
+        ExecutionLocation::Client => {
+            PathBuf::from(&config.client_code_distributor_dir).join("fragments")
+        }
+        ExecutionLocation::Server => PathBuf::from(&config.server_fragments_dir),
     };
-    destination = destination
-        .join("fragments")
-        .join("executable_fragments.json");
+    destination = destination.join("executable_fragments.json");
     info!(
         "Moving executable_fragments.json from {:?} to {:?}",
         &source, &destination
@@ -87,10 +89,10 @@ fn move_fragments_data(execution_location: ExecutionLocation, config: &&Configur
 
 fn move_js_wrappers(config: &Configuration) {
     // Move js_wrappers.js to client side code distributor fragments directory
-    let source = PathBuf::from(&config.host_project)
+    let source = PathBuf::from(&config.project)
         .join(TEMP_PATH)
         .join("js_wrappers.js");
-    let destination = PathBuf::from(&config.client_code_distributor).join("exports.js");
+    let destination = PathBuf::from(&config.client_code_distributor_dir).join("exports.js");
     info!("Moving js_glue.js from {:?} to {:?}", &source, &destination);
     file_handler::copy_file(&source, &destination).expect("Failed to move js_wrappers.js");
 }

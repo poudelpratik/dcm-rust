@@ -29,7 +29,7 @@ pub fn run(
 ) -> (Vec<RustFile>, ProjectCargoToml) {
     let mut rust_files: Vec<RustFile> = Vec::new();
 
-    let project_root = PathBuf::from(&config.host_project.clone());
+    let project_root = PathBuf::from(&config.project.clone());
     let source_code_dir = &project_root.join(SOURCE_CODE_DIR);
 
     let entries = WalkDir::new(source_code_dir)
@@ -42,7 +42,7 @@ pub fn run(
         info!("Analyzing file: {:?}", entry.path());
         let absolute_path = entry.path().to_path_buf();
         let relative_path = absolute_path
-            .strip_prefix(&config.host_project)
+            .strip_prefix(&config.project)
             .unwrap()
             .to_path_buf();
         let file_path = FilePath {

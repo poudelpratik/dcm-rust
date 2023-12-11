@@ -32,7 +32,7 @@ pub fn export_fragments_data(mobile_fragments: &MobileFragments, config: Arc<Con
     let final_fragments_minimal_json =
         serde_json::to_string_pretty(&final_fragments_combined).unwrap();
     file_handler::writeln(
-        &PathBuf::from(&config.host_project)
+        &PathBuf::from(&config.project)
             .join(TEMP_PATH)
             .join("executable_fragments.json"),
         final_fragments_minimal_json,
@@ -63,7 +63,7 @@ pub fn generate_wasm_wrapper(mobile_fragments: &mut MobileFragments) {
 pub fn generate_js_wrappers(mobile_fragments: &MobileFragments, config: Arc<Configuration>) {
     let js_wrappers = javascript_wrappers_generator::run(mobile_fragments);
     file_handler::writeln(
-        &PathBuf::from(&config.host_project)
+        &PathBuf::from(&config.project)
             .join(TEMP_PATH)
             .join("js_wrappers.js"),
         js_wrappers,
@@ -97,7 +97,7 @@ fn generate_fragments(
     for executable_fragment in executable_fragments.iter() {
         let fragment_path = create_fragment_path(
             &executable_fragment.get_package_name(),
-            &config.host_project,
+            &config.project,
             FRAGMENTS_LOCATION,
         );
 

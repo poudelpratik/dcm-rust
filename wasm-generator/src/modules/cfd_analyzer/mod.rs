@@ -23,8 +23,8 @@ pub fn run(
     rust_files: Arc<Vec<RustFile>>,
     mobile_fragments: &mut MobileFragments,
 ) {
-    let cfd_yaml_path = PathBuf::from(&config.host_project).join("CFD.yaml");
-    let cfd_yml_path = PathBuf::from(&config.host_project).join("CFD.yml");
+    let cfd_yaml_path = PathBuf::from(&config.project).join("CFD.yaml");
+    let cfd_yml_path = PathBuf::from(&config.project).join("CFD.yml");
     let cfd_container = match cfd_yaml_path.exists() || cfd_yml_path.exists() {
         true => {
             match util::parse_cfd::<CodeFragmentDescriptionContainer>(cfd_yaml_path)

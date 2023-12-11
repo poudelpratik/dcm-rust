@@ -52,7 +52,7 @@ impl<'a> DependencyLocator<'a> {
                 .file_path
                 .clone()
                 .get_absolute_path()
-                .starts_with(self.config.host_project.as_str())
+                .starts_with(self.config.project.as_str())
             {
                 return self.process_crate_dependency(dependency, &item_definition_location);
             }
@@ -212,7 +212,7 @@ impl<'a> DependencyLocator<'a> {
                             .file_path
                             .clone()
                             .get_absolute_path()
-                            .starts_with(self.config.host_project.as_str())
+                            .starts_with(self.config.project.as_str())
                         {
                             continue;
                         }

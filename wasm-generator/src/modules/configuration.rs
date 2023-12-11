@@ -9,13 +9,14 @@ use serde_derive::Deserialize;
 /// This struct represents the configuration of the application
 #[derive(Debug, Deserialize, Clone)]
 pub struct Configuration {
-    pub host_project: String,
-    pub server_code_distributor: String,
-    pub client_code_distributor: String,
+    pub project: String,
+    pub server_fragments_dir: String,
+    pub client_code_distributor_dir: String,
     pub compilation_enable_release_mode: Option<bool>,
     pub compilation_enable_wasm_optimization: Option<bool>,
     pub compilation_max_thread_pool: Option<usize>,
     pub benchmarks_dir: Option<String>,
+    pub keep_temp_dir: Option<bool>,
 }
 
 #[derive(Parser, Debug)]

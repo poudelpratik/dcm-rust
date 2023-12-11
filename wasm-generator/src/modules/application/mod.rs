@@ -1,3 +1,11 @@
+use std::io::Write;
+use std::path::PathBuf;
+use std::sync::Arc;
+use std::time::Duration;
+
+use derive_new::new;
+use serde_derive::{Deserialize, Serialize};
+
 use crate::modules::application::function_fragment::{ExecutionLocation, FunctionFragment};
 use crate::modules::application::object_fragment::ObjectFragment;
 use crate::modules::configuration::Configuration;
@@ -7,12 +15,7 @@ use crate::modules::{
     cfd_analyzer, dependency_resolver, fragment_compiler, fragment_generator,
     post_compilation_processor, source_code_analyzer, util,
 };
-use derive_new::new;
-use serde_derive::{Deserialize, Serialize};
-use std::io::Write;
-use std::path::PathBuf;
-use std::sync::Arc;
-use std::time::Duration;
+
 pub(crate) mod fragment_type;
 pub mod function_fragment;
 pub mod object_fragment;
@@ -64,26 +67,26 @@ pub async fn run() {
     delete_deployed_fragments(&config);
     // deploy the newly generated fragments to the respective directories
     post_compilation_processor::run(&generated_fragments, &config);
-    // delete the temporary directory after the deployment
-    // delete_temporary_directory(&config);
+
+    if !config.keep_temp_dir.unwrap_or(false) {
+        delete_temporary_directory(&config);
+    }
 }
 
 pub fn delete_temporary_directory(config: &Configuration) {
     // Delete the temporary directory if already exists
-    util::file_handler::delete_directory(
-        &PathBuf::from(&config.host_project.clone()).join(TEMP_PATH),
-    )
-    .expect("Failed to delete temporary directory.");
+    util::file_handler::delete_directory(&PathBuf::from(&config.project.clone()).join(TEMP_PATH))
+        .expect("Failed to delete temporary directory.");
 }
 
 pub fn delete_deployed_fragments(config: &Configuration) {
     util::file_handler::delete_directory(
-        &PathBuf::from(&config.server_code_distributor).join("fragments"),
+        &PathBuf::from(&config.server_fragments_dir).join("fragments"),
     )
     .expect("Failed to delete server fragments directory.");
 
     util::file_handler::delete_directory(
-        &PathBuf::from(&config.client_code_distributor).join("fragments"),
+        &PathBuf::from(&config.client_code_distributor_dir).join("fragments"),
     )
     .expect("Failed to delete client fragments directory.");
 }
