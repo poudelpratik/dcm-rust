@@ -23,8 +23,10 @@ pub fn run(fragments: &mut Vec<FinalFragmentContext>, config: Arc<Configuration>
     let operation = get_compile_operation(&config);
     thread_manager.process_mut(fragments, operation);
 
-    // write compilation data to file
-    export_compilation_metrics(fragments, &config);
+    if config.benchmarks_dir.is_some() {
+        // write compilation data to file
+        export_compilation_metrics(fragments, &config);
+    }
 }
 
 fn get_compile_operation<'a>(config: &Configuration) -> impl Fn(&mut FinalFragmentContext) + 'a {
@@ -153,7 +155,7 @@ fn run_command(
 }
 
 fn export_compilation_metrics(fragments: &mut [FinalFragmentContext], config: &Configuration) {
-    let benchmarks_dir = PathBuf::from("benchmarks");
+    let benchmarks_dir = PathBuf::from(&config.benchmarks_dir.clone().unwrap_or_default());
     if !benchmarks_dir.exists() {
         fs::create_dir_all(&benchmarks_dir).expect("Unable to create benchmarks directory");
     }

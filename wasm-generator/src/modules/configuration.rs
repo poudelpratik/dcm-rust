@@ -15,6 +15,7 @@ pub struct Configuration {
     pub compilation_enable_release_mode: Option<bool>,
     pub compilation_enable_wasm_optimization: Option<bool>,
     pub compilation_max_thread_pool: Option<usize>,
+    pub benchmarks_dir: Option<String>,
 }
 
 #[derive(Parser, Debug)]
