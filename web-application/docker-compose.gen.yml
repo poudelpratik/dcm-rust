@@ -4,9 +4,9 @@ services:
   wasm-generator:
     image: pratik90/wasm-generator
     environment:
-      host_project: "/demo-app"
-      server_code_distributor: "/code-distributor"
-      client_code_distributor: "/project/src/frontend/static/js/CodeDistributor"
+      project: "/demo-app"
+      server_fragments_dir: "/code-distributor/fragments"
+      client_code_distributor_dir: "/project/src/frontend/static/js/CodeDistributor"
       compilation_enable_release_mode: "true"
     #      compilation_enable_wasm_optimization: "true"
     #      compilation_max_thread_pool: 1
