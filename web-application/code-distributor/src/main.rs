@@ -1,6 +1,5 @@
 use code_distributor::{configuration::Configuration, init};
 use std::io::Write;
-use std::path::PathBuf;
 
 #[tokio::main]
 async fn main() {
@@ -8,16 +7,7 @@ async fn main() {
     std::env::set_var("RUST_LOG", "info");
     init_logger();
 
-    // initialize configuration
-    let fragment_dir = PathBuf::from("fragments")
-        .canonicalize()
-        .unwrap()
-        .to_str()
-        .unwrap()
-        .to_string();
-    std::env::set_var("fragments_dir", fragment_dir.clone());
-    std::env::set_var("api_key", "tZwqxgVXSEaqYQZ");
-    let configuration = Configuration::from_env();
+    let configuration = Configuration::default();
 
     // initialize code distributor
     init(configuration).await;

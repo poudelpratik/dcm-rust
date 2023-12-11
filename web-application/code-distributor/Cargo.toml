@@ -22,10 +22,11 @@ rmp-serde = "1.1.2"
 byteorder = "1.4.3"
 thiserror = "1.0.48"
 async-trait = "0.1.73"
-figment = { version = "0.10.10", features = ["env"] }
+figment = { version = "0.10.10", features = ["env", "toml"] }
 jsonwebtoken = "9.1.0"
 wasmtime = "15.0.1"
 wat = "1.0.82"
+clap = { version = "4.4.11", features = ["derive"] }
 
 [dev-dependencies]
 time = "0.3.30"

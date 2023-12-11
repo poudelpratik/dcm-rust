@@ -1,3 +1,5 @@
+use clap::Parser;
+use figment::providers::{Format, Toml};
 use figment::{providers::Env, Figment};
 use serde_derive::{Deserialize, Serialize};
 
@@ -9,25 +11,21 @@ pub struct Configuration {
     pub fragments_dir: String,
 }
 
-impl Configuration {
-    pub fn new(
-        api_key: String,
-        app_port: Option<u16>,
-        fragments_dir: String,
-        app_host: Option<String>,
-    ) -> Self {
-        Configuration {
-            app_host,
-            app_port,
-            api_key,
-            fragments_dir,
-        }
-    }
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct Args {
+    #[arg(short, long, default_value = "Config.toml")]
+    config: String,
+}
 
-    pub fn from_env() -> Self {
-        Figment::new()
+impl Default for Configuration {
+    fn default() -> Self {
+        let args = Args::parse();
+        let config: Configuration = Figment::new()
+            .merge(Toml::file(args.config))
             .merge(Env::raw())
             .extract()
-            .expect("Failed to load configuration")
+            .unwrap();
+        config
     }
 }
