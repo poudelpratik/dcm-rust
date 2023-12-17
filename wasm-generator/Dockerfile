@@ -44,7 +44,7 @@ RUN apt update && \
     rm -rf /var/lib/apt/lists/*
 
 # Install the build-essential package for the linker
-RUN sudo apt install build-essential
+RUN apt install build-essential
 
 #USER $USER
 
