@@ -39,6 +39,7 @@ pub async fn run(
     automatic_dependency_resolver
         .resolve_dependencies(&mut mobile_fragments.impls)
         .await;
+    automatic_dependency_resolver.destroy().await;
 }
 
 pub struct FragmentsDependencyResolver {
@@ -96,6 +97,10 @@ impl FragmentsDependencyResolver {
             ));
             set_cargo_toml(fragment, &self.project_cargo_toml);
         }
+    }
+
+    pub async fn destroy(&mut self) {
+        self.client.shutdown().await.unwrap_or_default();
     }
 }
 

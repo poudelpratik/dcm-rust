@@ -317,7 +317,8 @@ impl RustAnalyzerClient {
     }
 
     async fn shutdown(&mut self) -> Result<(), ApplicationError> {
-        let jsonrpc_request = JsonRpcRequest::new("shutdown", Some(json!({})), None);
+        let message_id = self.id_generator.next_id();
+        let jsonrpc_request = JsonRpcRequest::new("shutdown", Some(json!({})), Some(message_id));
         self.send_request(jsonrpc_request).await?;
         Ok(())
     }
@@ -419,28 +420,19 @@ mod tests {
         let mut client: Box<dyn LspClient> = Box::new(RustAnalyzerClient::new().await.unwrap());
 
         // Initialize and wait for the server to be ready.
-        client.initialize(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo".to_string())).await.unwrap();
+        client.initialize(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo".to_string())).await.unwrap();
 
         let definition_location = client
-            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/main.rs".to_string()), 23, 24)
+            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/main.rs".to_string()), 23, 24)
             .await
             .unwrap();
         println!(
             "Go to Definition Response: {}",
             serde_json::to_string(&definition_location).unwrap()
         );
-
-        let definition_location = client
-            .get_implementation_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/webshop.rs".to_string()), 157, 11)
-            .await
-            .unwrap();
-        println!(
-            "Go to Implementation Response: {}",
-            serde_json::to_string(&definition_location).unwrap()
-        );
-
+        client.shutdown().await.unwrap();
         // let definition_location = client
-        //     .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/webshop.rs".to_string()), 18, 24)
+        //     .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/webshop.rs".to_string()), 18, 24)
         //     .await;
         // assert_ok!(&definition_location);
         // println!(
@@ -454,10 +446,10 @@ mod tests {
         let mut client: Box<dyn LspClient> = Box::new(RustAnalyzerClient::new().await.unwrap());
 
         // Initialize and wait for the server to be ready.
-        client.initialize(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo".to_string())).await.unwrap();
+        client.initialize(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo".to_string())).await.unwrap();
 
         let location = client
-            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 0, 34)
+            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 0, 34)
             .await
             .unwrap();
         println!(
@@ -465,23 +457,7 @@ mod tests {
             serde_json::to_string_pretty(&location).unwrap()
         );
         let location = client
-            .get_document_highlight_positions(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 0, 34)
-            .await
-            .unwrap();
-        println!(
-            "Find Document Highlight Response: {}",
-            serde_json::to_string_pretty(&location).unwrap()
-        );
-
-        let location = client
-            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 16)
-            .await;
-        println!(
-            "Go to Definition Response: {}",
-            serde_json::to_string_pretty(&location.unwrap()).unwrap()
-        );
-        let location = client
-            .get_document_highlight_positions(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 16)
+            .get_document_highlight_positions(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 0, 34)
             .await
             .unwrap();
         println!(
@@ -490,14 +466,30 @@ mod tests {
         );
 
         let location = client
-            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 46)
+            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 16)
             .await;
         println!(
             "Go to Definition Response: {}",
             serde_json::to_string_pretty(&location.unwrap()).unwrap()
         );
         let location = client
-            .get_document_highlight_positions(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 46)
+            .get_document_highlight_positions(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 16)
+            .await
+            .unwrap();
+        println!(
+            "Find Document Highlight Response: {}",
+            serde_json::to_string_pretty(&location).unwrap()
+        );
+
+        let location = client
+            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 46)
+            .await;
+        println!(
+            "Go to Definition Response: {}",
+            serde_json::to_string_pretty(&location.unwrap()).unwrap()
+        );
+        let location = client
+            .get_document_highlight_positions(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground.rs".to_string()), 1, 46)
             .await
             .unwrap();
         println!(
@@ -511,9 +503,9 @@ mod tests {
         let mut client: Box<dyn LspClient> = Box::new(RustAnalyzerClient::new().await.unwrap());
 
         // Initialize and wait for the server to be ready.
-        client.initialize(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo".to_string())).await.unwrap();
+        client.initialize(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo".to_string())).await.unwrap();
         let definition_location = client
-            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground5.rs".to_string()), 37, 16)
+            .get_definition_location(LspFilePath("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground5.rs".to_string()), 37, 16)
             .await;
         assert_err!(definition_location);
     }
@@ -522,7 +514,7 @@ mod tests {
     #[ignore]
     async fn test_it_old_way() {
         let mut client = RustAnalyzerClient::new().await.unwrap();
-        let initialize_response = client.initialize("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo").await.unwrap();
+        let initialize_response = client.initialize("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo").await.unwrap();
         println!(
             "Initialize Response: {}",
             serde_json::to_string(&initialize_response).unwrap()
@@ -530,11 +522,11 @@ mod tests {
         client.initialized().await.unwrap();
         client.wait_for_server_ready().await.unwrap();
         client
-            .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/main.rs")
+            .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/main.rs")
             .await
             .unwrap();
         let definition_response = client
-            .definition("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/main.rs", 23, 24)
+            .definition("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/main.rs", 23, 24)
             .await
             .unwrap();
         println!(
@@ -542,11 +534,11 @@ mod tests {
             serde_json::to_string(&definition_response).unwrap()
         );
         client
-            .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground5.rs")
+            .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground5.rs")
             .await
             .unwrap();
         let definition_response = client
-            .definition("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground5.rs", 19, 33)
+            .definition("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground5.rs", 19, 33)
             .await
             .unwrap();
         println!(
@@ -554,7 +546,7 @@ mod tests {
             serde_json::to_string(&definition_response).unwrap()
         );
         let definition_response = client
-            .definition("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground5.rs", 18, 24)
+            .definition("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground5.rs", 18, 24)
             .await
             .unwrap();
         println!(
@@ -566,7 +558,7 @@ mod tests {
     // #[tokio::test]
     // async fn test_publish_diagnostic() {
     //     let mut client = RustAnalyzerClient::new().await.unwrap();
-    //     let initialize_response = client.initialize("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo").await.unwrap();
+    //     let initialize_response = client.initialize("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo").await.unwrap();
     //     println!(
     //         "Initialize Response: {}",
     //         serde_json::to_string(&initialize_response).unwrap()
@@ -574,15 +566,15 @@ mod tests {
     //     client.initialized().await.unwrap();
     //     client.wait_for_server_ready().await.unwrap();
     //     client
-    //         .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/main.rs")
+    //         .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/main.rs")
     //         .await
     //         .unwrap();
     //     client
-    //         .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground5.rs")
+    //         .did_open("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground5.rs")
     //         .await
     //         .unwrap();
     //     let definition_response = client
-    //         .document_publish_diagnostics("file:///home/cybernetics/Documents/Projects/University/thesis/rust-webassembly/runtime-code-mobility-demo/src/shared/playground5.rs")
+    //         .document_publish_diagnostics("file:///home/cybernetics/Documents/Projects/University/thesis/DCM-RUST/web-application/runtime-code-mobility-demo/src/shared/playground5.rs")
     //         .await
     //         .unwrap();
     //     println!(
