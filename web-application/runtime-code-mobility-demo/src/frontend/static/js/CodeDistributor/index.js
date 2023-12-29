@@ -44,19 +44,6 @@ export default class CodeDistributionManager {
         new DecisionSystemSimulator(this.configuration, auth, this.fragmentRegistry);
     }
 
-    async updateFragmentRegistry(fragmentId, executionLocation) {
-        this.fragmentRegistry.update(fragmentId, executionLocation);
-        const connectionIcon = document.querySelector('#connection-icon');
-        connectionIcon.classList.add('trigger');
-        setTimeout(() => {
-            connectionIcon.classList.remove('trigger');
-        }, 200);
-        await this.webSocketClient.sendMessage(MESSAGE_TYPES.UPDATE_FRAGMENTS, [{
-            fragment_id: fragmentId,
-            execution_location: executionLocation
-        }]);
-    }
-
     async execute(fragmentId, functionName, parameters) {
         const clientIcon = document.querySelector('#client-icon');
         const serverIcon = document.querySelector('#server-icon');

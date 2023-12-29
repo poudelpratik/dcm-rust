@@ -21,6 +21,7 @@ impl<T> Message<T> {
 #[derive(Debug, Deserialize, Serialize)]
 pub(crate) enum Events {
     ExecuteFunction,
+    FunctionResult,
     UpdateFragments,
 }
 

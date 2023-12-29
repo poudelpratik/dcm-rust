@@ -3,7 +3,7 @@ import {isUndefined, selectElement, uuidv4} from "./utils.js";
 
 export class MESSAGE_TYPES {
     static EXECUTE_FUNCTION = 'ExecuteFunction';
-    static WASM_RESULT = 'WasmResult';
+    static FUNCTION_RESULT = 'FunctionResult';
     static UPDATE_FRAGMENTS = 'UpdateFragments';
 }
 
@@ -50,7 +50,7 @@ export default class WebSocketClient {
     onMessage(event) {
         const message = JSON.parse(event.data);
         switch (message.message_type) {
-            case MESSAGE_TYPES.EXECUTE_FUNCTION:
+            case MESSAGE_TYPES.FUNCTION_RESULT:
                 if (this.pendingRequests[message.message_id]) {
                     this.pendingRequests[message.message_id].resolve(message.data);
                     delete this.pendingRequests[message.message_id];

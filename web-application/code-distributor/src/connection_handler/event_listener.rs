@@ -58,7 +58,7 @@ async fn handle_execute_function_event(
                 )
                 .await;
             if let Ok(result) = result {
-                let message = Message::new(message.message_id, Events::ExecuteFunction, result);
+                let message = Message::new(message.message_id, Events::FunctionResult, result);
                 let json_string = serde_json::to_string(&message)
                     .unwrap_or("Unable to serialize the result".to_string());
                 {
