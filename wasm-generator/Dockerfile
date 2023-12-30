@@ -1,5 +1,5 @@
 # Use the official Rust image as the base image
-FROM rust:1.74 AS builder
+FROM rust:1.75 AS builder
 
 LABEL autodelete="true"
 LABEL maintainer="Pratik Poudel<pratikpoudel90@gmail.com>"
@@ -24,7 +24,7 @@ COPY Cargo.toml Cargo.lock Config.toml ./
 # Build the application
 RUN if [ "$BUILD_MODE" = "release" ] ; then cargo build --release; else cargo build; fi
 
-FROM rust:1.74
+FROM rust:1.75
 ARG BUILD_MODE=debug
 # Copy the binary from the builder stage. Change this from debug to release later, currently it is in debug for development purposes for its reduced compilation time.
 COPY --from=builder /app/target/${BUILD_MODE}/wasm-generator /usr/local/bin/
