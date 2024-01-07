@@ -4,3 +4,4 @@ client_code_distributor_dir = "/home/cybernetics/Documents/Projects/University/t
 max_thread_pool = 6
 release_mode = true
 optimize_wasm = true
+keep_temp_dir = true

@@ -11,7 +11,7 @@ There are two ways to use this project.
 
 ## Dependencies
 
-- Rust 1.74.0
+- Rust 1.75.0
 
 ## Executing program
 
