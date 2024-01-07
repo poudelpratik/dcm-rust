@@ -8,14 +8,6 @@ ARG BUILD_MODE=debug
 # Set the current working directory inside the container
 WORKDIR /app
 
-# Create a new user inside the container
-#ARG USER=wasm_generator
-#ARG GROUP=wasm_generator
-#ARG UID=1000
-#ARG GID=1000
-#RUN groupadd -g $GID $GROUP \
-#  && useradd -m -g $GID -u $UID $USER
-
 COPY src ./src
 # Copy the Cargo.toml, Cargo.lock, and Config.toml files
 COPY Cargo.toml Cargo.lock Config.toml ./
