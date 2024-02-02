@@ -1,6 +1,6 @@
 'use strict';
 
-import {validate_coupon, validate_coupon_input} from './initCodeDistributor.js';
+import {validate_coupon, validate_coupon_input} from './CodeDistributor/exports.js';
 import {selectElement} from './utils/helpers.js';
 
 export default class CouponForm {

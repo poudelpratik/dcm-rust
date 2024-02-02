@@ -1,4 +1,4 @@
-import {factorial, fibonacci} from "./initCodeDistributor.js";
+import {factorial, fibonacci} from "./CodeDistributor/exports.js";
 
 function factorial_js(n) {
     if (n === 0) return 1;

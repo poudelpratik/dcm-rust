@@ -1,6 +1,6 @@
 'use strict';
 
-import {Order, OrderedProduct, OrderManager} from "../initCodeDistributor.js";
+import {Order, OrderedProduct, OrderManager} from "../CodeDistributor/exports.js";
 import {uuidv4} from "../utils/helpers.js"
 import {testData} from './test-data.js';
 

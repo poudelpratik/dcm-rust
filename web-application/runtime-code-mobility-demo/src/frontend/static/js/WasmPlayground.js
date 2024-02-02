@@ -1,4 +1,4 @@
-import {count_vowels, factorial, fibonacci, find_primes} from "./initCodeDistributor.js";
+import {count_vowels, factorial, fibonacci, find_primes} from "./CodeDistributor/exports.js";
 
 function execute_factorial() {
     let n = parseInt(document.getElementById("factorial_input").value);
