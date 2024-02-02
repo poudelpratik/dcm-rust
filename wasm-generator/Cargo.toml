@@ -7,8 +7,6 @@ edition = "2021"
 
 [dependencies]
 syn = { version = "2.0.18", features = ["full", "printing", "visit", "visit-mut", "parsing", "extra-traits"] }
-syn-file-expand = "0.3.0"
-synthez = "0.3.1"
 quote = "1.0.28"
 serde = "1.0.163"
 serde_json = { version = "1.0.107", features = ["raw_value"] }
@@ -30,7 +28,6 @@ lsp-types = "0.94.1"
 tokio = { version = "1.29.1", features = ["full"] }
 jsonrpc = "0.16.0"
 async-trait = "0.1.73"
-inflections = "1.1.1"
 clap = { version = "4.4.11", features = ["derive"] }
 
 [dev-dependencies]

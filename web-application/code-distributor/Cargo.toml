@@ -12,14 +12,12 @@ serde_json = "1.0.104"
 serde_derive = "1.0.163"
 tokio = { version = "1.29.1", features = ["full"] }
 uuid = { version = "1.4.1", features = ["v4", "serde"] }
-lazy_static = "1.4.0"
 futures-util = "0.3.28"
 chrono = "0.4.26"
 log = "0.4.19"
 env_logger = "0.10.0"
 #wasmer = "4.2.4"
 rmp-serde = "1.1.2"
-byteorder = "1.4.3"
 thiserror = "1.0.48"
 async-trait = "0.1.73"
 figment = { version = "0.10.10", features = ["env", "toml"] }

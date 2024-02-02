@@ -35,8 +35,6 @@ RUN apt update && \
     apt install -y binaryen && \
     rm -rf /var/lib/apt/lists/*
 
-# Install the build-essential package for the linker
-RUN apt install build-essential
 
 #USER $USER
 
