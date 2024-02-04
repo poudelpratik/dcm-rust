@@ -55,7 +55,7 @@ pub fn execute(
     function_name: String,
     params: &[serde_json::Value],
 ) -> Result<String, ApplicationError> {
-    let mut store = Store::new(&module_info.engine, 4);
+    let mut store = Store::new(&module_info.engine, ());
     let instance = Instance::new(&mut store, &module_info.module, &[]).unwrap();
     let func = instance.get_typed_func::<(i32, i32), i32>(&mut store, &function_name)?;
     let memory = instance.get_memory(&mut store, "memory").unwrap();
